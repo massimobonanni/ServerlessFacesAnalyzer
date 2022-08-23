@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using ServerlessFacesAnalyzer.Cognitive;
 using ServerlessFacesAnalyzer.Core.Interfaces;
 using ServerlessFacesAnalyzer.Functions;
+using ServerlessFacesAnalyzer.ImageProcessing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace ServerlessFacesAnalyzer.Functions
         public override void Configure(IFunctionsHostBuilder builder)
         {
             builder.Services.AddScoped<IFaceAnalyzer, FaceAnalyzer>();
-
+            builder.Services.AddScoped<IImageProcessor, ImageProcessor>();
         }
     }
 }

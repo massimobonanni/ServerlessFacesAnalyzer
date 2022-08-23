@@ -25,12 +25,16 @@ namespace ServerlessFacesAnalyzer.Functions
         private readonly ILogger<AnalyzeFunction> logger;
         private readonly IFaceAnalyzer faceAnalyzer;
         private readonly IConfiguration configuration;
+        private readonly IImageProcessor imageProcessor;
 
         public AnalyzeFunction(IFaceAnalyzer faceAnalyzer,
-            IConfiguration configuration, ILogger<AnalyzeFunction> log)
+            IConfiguration configuration,
+            IImageProcessor imageProcessor,
+            ILogger<AnalyzeFunction> log)
         {
             this.logger = log;
             this.faceAnalyzer = faceAnalyzer;
+            this.imageProcessor = imageProcessor;
             this.configuration = configuration;
         }
 
@@ -51,6 +55,7 @@ namespace ServerlessFacesAnalyzer.Functions
             var operationId = Guid.NewGuid().ToString();
             var dateNow = DateTime.UtcNow;
             var file = req.Form.Files[0];
+            var extension = (new FileInfo(file.FileName)).Extension;
             var blobFolder = $"{dateNow:yyyy}\\{dateNow:MM}\\{dateNow:dd}\\{operationId}";
             var blobName = $"{blobFolder}\\{file.FileName}";
 
@@ -69,9 +74,21 @@ namespace ServerlessFacesAnalyzer.Functions
             var resultBlobName = $"{blobFolder}\\result.json";
             await destinationContainer.SerializeObjectToBlobAsync(resultBlobName, response);
 
+            for (int i = 0; i < faceresult.Faces.Count; i++)
+            {
+                var face = faceresult.Faces[i];
+                var faceBlobName = $"{blobFolder}\\face{i + 1}{extension}";
+                var faceBlob = destinationContainer.GetBlockBlobReference(faceBlobName);
+                using (var sourceStream = file.OpenReadStream())
+                using (var faceBlobStream = faceBlob.OpenWrite())
+                {
+                    await this.imageProcessor.CropImageAsync(sourceStream, face.Rectangle, faceBlobStream);
+                }
+            }
+
             return new OkObjectResult(response);
         }
 
-        
+
     }
 }

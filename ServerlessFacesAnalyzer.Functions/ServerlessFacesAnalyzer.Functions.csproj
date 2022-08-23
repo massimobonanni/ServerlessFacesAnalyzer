@@ -14,6 +14,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ServerlessFacesAnalyzer.Cognitive\ServerlessFacesAnalyzer.Cognitive.csproj" />
     <ProjectReference Include="..\ServerlessFacesAnalyzer.Core\ServerlessFacesAnalyzer.Core.csproj" />
+    <ProjectReference Include="..\ServerlessFacesAnalyzer.ImageProcessing\ServerlessFacesAnalyzer.ImageProcessing.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">

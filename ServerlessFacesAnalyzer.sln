@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerlessFacesAnalyzer.Cor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerlessFacesAnalyzer.Cognitive", "ServerlessFacesAnalyzer.Cognitive\ServerlessFacesAnalyzer.Cognitive.csproj", "{FDA553DB-7609-4661-98E2-4A8E38A8C49C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerlessFacesAnalyzer.ImageProcessing", "ServerlessFacesAnalyzer.ImageProcessing\ServerlessFacesAnalyzer.ImageProcessing.csproj", "{925FF01E-CE6F-4406-9659-6139FEA48C64}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{FDA553DB-7609-4661-98E2-4A8E38A8C49C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDA553DB-7609-4661-98E2-4A8E38A8C49C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDA553DB-7609-4661-98E2-4A8E38A8C49C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{925FF01E-CE6F-4406-9659-6139FEA48C64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{925FF01E-CE6F-4406-9659-6139FEA48C64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{925FF01E-CE6F-4406-9659-6139FEA48C64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{925FF01E-CE6F-4406-9659-6139FEA48C64}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
