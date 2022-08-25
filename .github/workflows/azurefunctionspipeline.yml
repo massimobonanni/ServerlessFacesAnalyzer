@@ -30,9 +30,9 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Publish
-      run:  dotnet publish -c Release -o ../azfunction 
+      run:  dotnet publish ServerlessFacesAnalyzer.Functions/ServerlessFacesAnalyzer.Functions.csproj -c Release -o ServerlessFacesAnalyzer.Functions/publish 
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v3.1.0
       with:
         name: AzFunction
-        path: ServerlessFacesAnalyzer/azfunction/
+        path: ServerlessFacesAnalyzer.Functions/publish
