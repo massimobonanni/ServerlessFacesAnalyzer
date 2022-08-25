@@ -39,7 +39,7 @@ jobs:
       uses: actions/upload-artifact@v3.1.0
       with:
         name: AzFunction
-        path: ServerlessFacesAnalyzer.Functions/publish
+        path: ServerlessFacesAnalyzer.Functions/publish/*.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -49,6 +49,8 @@ jobs:
       uses: actions/download-artifact@v3.0.0
       with:
         name: AzFunction
+    - name: Display structure of downloaded files
+      run: ls -R
     - name: Azure Functions Action
       uses: Azure/functions-action@v1.4.7
       with:
