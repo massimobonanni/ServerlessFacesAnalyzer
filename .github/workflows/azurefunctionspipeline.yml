@@ -17,24 +17,39 @@ on:
 
 env: 
   FUNCTION_APP_NAME: "srvlfaceanalyzer-func"
-
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: '${{ github.workspace }}/ServerlessFacesAnalyzer.Functions'
+  BUILD_OUTPUT_PATH: '${{ github.workspace }}/build-artifacts'
+  BUILD_PACKAGE_NAME: 'az-func.zip'
+  
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    
     - name: Setup .NET
       uses: actions/setup-dotnet@v2
       with:
         dotnet-version: 6.0.x
+    
     - name: Restore dependencies
       run: dotnet restore
+    
     - name: Build
       run: dotnet build --configuration Release --no-restore
+    
     - name: Test
       run: dotnet test --no-build --verbosity normal
+    
     - name: Publish
-      run:  dotnet publish ServerlessFacesAnalyzer.Functions/ServerlessFacesAnalyzer.Functions.csproj -c Release -o ServerlessFacesAnalyzer.Functions/publish /p:WebPublishMethod=Package /p:PackageAsSingleFile=true
+      run:  |
+        publishfolder="${{ github.workspace }}/output"
+        mkdir $publishfolder
+       	cd $publishfolder
+       	dotnet publish ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }} --configuration Release --output .
+       	mkdir ${{ env.BUILD_OUTPUT_PATH }}
+       	zip -r ${{ env.BUILD_OUTPUT_PATH }}/${{ env.BUILD_PACKAGE_NAME }} .
+        
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v3.1.0
       with:
