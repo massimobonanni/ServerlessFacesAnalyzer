@@ -17,6 +17,7 @@ using ServerlessFacesAnalyzer.Functions.Responses;
 using ServerlessFacesAnalyzer.Core.Interfaces;
 using Microsoft.Extensions.Configuration;
 using ServerlessFacesAnalyzer.Core.Models;
+using ServerlessFacesAnalyzer.Functions.Requestes;
 
 namespace ServerlessFacesAnalyzer.Functions
 {
@@ -39,17 +40,20 @@ namespace ServerlessFacesAnalyzer.Functions
         }
 
         [FunctionName("AnalyzeFaceFromStream")]
-        [OpenApiOperation(operationId: "AnalyzeFaceFromStream")]
+        [OpenApiOperation(operationId: "AnalyzeFaceFromStream", Description = "This API allows you to upload an image to analize.")]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
-        [OpenApiParameter(name: "name", In = ParameterLocation.Query, Required = true, Type = typeof(string), Description = "The **Name** parameter")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
+        [OpenApiRequestBody("multipart/form-data", typeof(AnalyzeFaceFromStreamRequest), Required = true)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(AnalyzeFaceFromStreamResponse), Description = "The result of the analisis on the uploaded image")]
+        [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Description = "There aren't any files sent with the request")]
         public async Task<IActionResult> AnalyzeFaceFromStream(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "analyze")] HttpRequest req,
             [Blob("%DestinationContainer%", FileAccess.ReadWrite, Connection = "StorageConnectionString")] CloudBlobContainer destinationContainer)
         {
             logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            if (!req.Form.Files.Any())
+            if (!req.ContentType.StartsWith("multipart/form-data"))
+                return new BadRequestResult();
+            if (req.Form == null || req.Form.Files == null || !req.Form.Files.Any())
                 return new BadRequestResult();
 
             var operationId = Guid.NewGuid().ToString();
