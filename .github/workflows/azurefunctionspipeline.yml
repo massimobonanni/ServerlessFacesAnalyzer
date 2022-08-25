@@ -1,4 +1,4 @@
-name: .NET
+name: CI/CD on Azure Function
 
 on:
   workflow_dispatch:
