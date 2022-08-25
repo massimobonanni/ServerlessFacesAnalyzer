@@ -16,7 +16,7 @@ on:
       - ".github/**"
 
 env: 
-  FUNCTION_APP_NAME: "sfav22hocxrikc5m-func"
+  FUNCTION_APP_NAME: "srvlfaceanalyzer-func"
 
 jobs:
   build:
