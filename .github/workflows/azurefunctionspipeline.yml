@@ -42,13 +42,13 @@ jobs:
       run: dotnet test --no-build --verbosity normal
     
     - name: Publish
-      run:  |
+      run: |
         publishfolder="${{ github.workspace }}/output"
         mkdir $publishfolder
-       	cd $publishfolder
-       	dotnet publish ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }} --configuration Release --output .
-       	mkdir ${{ env.BUILD_OUTPUT_PATH }}
-       	zip -r ${{ env.BUILD_OUTPUT_PATH }}/${{ env.BUILD_PACKAGE_NAME }} .
+        cd $publishfolder
+        dotnet publish ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }} --configuration Release --output .
+        mkdir ${{ env.BUILD_OUTPUT_PATH }}
+        zip -r ${{ env.BUILD_OUTPUT_PATH }}/${{ env.BUILD_PACKAGE_NAME }} .
         
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v3.1.0
