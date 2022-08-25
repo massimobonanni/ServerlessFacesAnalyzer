@@ -1,16 +1,19 @@
 name: .NET
 
 on:
+  workflow_dispatch:
   push:
     branches: 
       - "main"
     paths-ignore:
       - "ServerlessFacesAnalyzer.IaC/**"
+      - ".github/**"
   pull_request:
     branches: 
       - "main"
     paths-ignore:
       - "ServerlessFacesAnalyzer.IaC/**"
+      - ".github/**"
 
 jobs:
   build:
