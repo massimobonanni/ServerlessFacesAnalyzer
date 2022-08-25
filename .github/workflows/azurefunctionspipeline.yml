@@ -75,4 +75,4 @@ jobs:
       with:
         app-name: ${{ env.FUNCTION_APP_NAME }}
         package: ${{ env.BUILD_OUTPUT_PATH }}/${{ env.BUILD_PACKAGE_NAME }}
-        publish-profile: ${{ env.FUNCTION_APP_PUBLISH_PROFILE }}
+        publish-profile: ${{ secrets.FUNCTION_APP_PUBLISH_PROFILE }}
