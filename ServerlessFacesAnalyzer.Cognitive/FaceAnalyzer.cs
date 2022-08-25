@@ -71,20 +71,7 @@ namespace ServerlessFacesAnalyzer.Cognitive
             {
                 if (face.Age >= config.AgeThreshold)
                 {
-                    var faceResult = new FaceInfo()
-                    {
-                        Age = face.Age,
-                        Gender = face.Gender?.ToString(),
-                        Rectangle = new Core.Models.FaceRectangle()
-                        {
-                           Left=face.FaceRectangle.Left,
-                           Top=face.FaceRectangle.Top,
-                           Width=face.FaceRectangle.Width,
-                           Height=face.FaceRectangle.Height
-                        }
-                    };
-
-                    result.Faces.Add(faceResult);
+                    result.Faces.Add(face.ToFaceInfo());
                 }
             }
             return result;
