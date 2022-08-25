@@ -1,12 +1,17 @@
 @description('The location wher you want to create the resources.')
 param location string = resourceGroup().location
 
-var storageAccountName = toLower('sfastore${uniqueString(resourceGroup().id)}')
-var functionAppStorageAccountName = toLower('sfafunc${uniqueString(resourceGroup().id)}')
-var funcHostingPlanName = toLower('sfa${uniqueString(resourceGroup().id)}-plan')
-var functionAppName = toLower('sfa${uniqueString(resourceGroup().id)}-func')
-var applicationInsightsName= toLower('sfa${uniqueString(resourceGroup().id)}-ai')
-var cognitiveServiceName = toLower('sfa${uniqueString(resourceGroup().id)}-cs')
+@description('The name of the environment. It will be used to create the name of the resources in the resource group.')
+@maxLength(16)
+@minLength(3)
+param environmentName string = 'sfa${uniqueString(subscription().id, resourceGroup().name)}'
+
+var storageAccountName = toLower('${environmentName}dstore')
+var functionAppStorageAccountName = toLower('${environmentName}appstore')
+var funcHostingPlanName = toLower('${environmentName}-plan')
+var functionAppName = toLower('${environmentName}-func')
+var applicationInsightsName= toLower('${environmentName}-ai')
+var cognitiveServiceName = toLower('${environmentName}-cs')
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   name: storageAccountName
