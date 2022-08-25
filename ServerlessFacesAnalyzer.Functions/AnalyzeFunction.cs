@@ -56,32 +56,28 @@ namespace ServerlessFacesAnalyzer.Functions
             if (req.Form == null || req.Form.Files == null || !req.Form.Files.Any())
                 return new BadRequestResult();
 
-            var operationId = Guid.NewGuid().ToString();
-            var dateNow = DateTime.UtcNow;
             var file = req.Form.Files[0];
-            var extension = (new FileInfo(file.FileName)).Extension;
-            var blobFolder = $"{dateNow:yyyy}\\{dateNow:MM}\\{dateNow:dd}\\{operationId}";
-            var blobName = $"{blobFolder}\\{file.FileName}";
-
-            await file.UploadToStorageAsync(blobName, destinationContainer);
+            var operationContext = OperationContext.CreateContext(file);
+            
+            await file.UploadToStorageAsync(operationContext.BlobName, destinationContainer);
 
             var faceresult = await file.AnalyzeAsync(this.faceAnalyzer);
 
             var response = new AnalyzeFaceFromStreamResponse()
             {
-                OperationId = operationId,
+                OperationId = operationContext.OperationId,
                 OriginalFileName = file.FileName,
-                FileName = blobName,
+                FileName = operationContext.BlobName,
                 AnalysisResult = faceresult
             };
 
-            var resultBlobName = $"{blobFolder}\\result.json";
+            var resultBlobName = operationContext.GenerateResultFileName();
             await destinationContainer.SerializeObjectToBlobAsync(resultBlobName, response);
 
             for (int i = 0; i < faceresult.Faces.Count; i++)
             {
                 var face = faceresult.Faces[i];
-                var faceBlobName = $"{blobFolder}\\face{i + 1}{extension}";
+                var faceBlobName = operationContext.GenerateFaceFileName(i);
                 var faceBlob = destinationContainer.GetBlockBlobReference(faceBlobName);
                 using (var sourceStream = file.OpenReadStream())
                 using (var faceBlobStream = faceBlob.OpenWrite())
