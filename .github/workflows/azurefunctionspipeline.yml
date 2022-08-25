@@ -20,9 +20,7 @@ env:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
     - name: Setup .NET
@@ -45,7 +43,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-
+    needs: build
     steps:
     - name: Download a Build Artifact
       uses: actions/download-artifact@v3.0.0
@@ -57,4 +55,3 @@ jobs:
         app-name: ${{ env.FUNCTION_APP_NAME }}
         package: AzFunction
         publish-profile: ${{ env.FUNCTION_APP_PUBLISH_PROFILE }}
-        
