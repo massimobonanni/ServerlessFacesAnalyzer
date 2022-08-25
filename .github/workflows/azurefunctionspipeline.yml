@@ -39,7 +39,7 @@ jobs:
       uses: actions/upload-artifact@v3.1.0
       with:
         name: AzFunction
-        path: ServerlessFacesAnalyzer.Functions/publish/*.zip
+        path: ServerlessFacesAnalyzer.Functions/publish
 
   deploy:
     runs-on: ubuntu-latest
