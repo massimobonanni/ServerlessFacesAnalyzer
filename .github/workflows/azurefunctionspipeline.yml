@@ -34,7 +34,7 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Publish
-      run:  dotnet publish ServerlessFacesAnalyzer.Functions/ServerlessFacesAnalyzer.Functions.csproj -c Release -o ServerlessFacesAnalyzer.Functions/publish 
+      run:  dotnet publish ServerlessFacesAnalyzer.Functions/ServerlessFacesAnalyzer.Functions.csproj -c Release -o ServerlessFacesAnalyzer.Functions/publish /p:WebPublishMethod=Package /p:PackageAsSingleFile=true
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v3.1.0
       with:
