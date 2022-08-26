@@ -1,0 +1,42 @@
+name: CI/CD on IaC
+
+on:
+  workflow_dispatch:
+  push:
+    branches: 
+      - "main"
+    paths:
+      - "ServerlessFacesAnalyzer.IaC/**"
+  pull_request:
+    branches: 
+      - "main"
+    paths:
+      - "ServerlessFacesAnalyzer.IaC/**"
+      
+env: 
+  BICEP_PROJECT_PATH: '${{ github.workspace }}/ServerlessFacesAnalyzer.Functions'
+  BICEP_MAIN_TEMPLATE: 'main.bicep'
+  BUILD_OUTPUT_PATH: '${{ github.workspace }}/build-artifacts'
+
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build BICEP template
+        uses: Azure/cli@v1
+        with:
+          azcliversion: 2.30.0
+          inlineScript: |
+            cd ${{ env.BICEP_PROJECT_PATH }}
+            az bicep build --file ${{ env.BICEP_MAIN_TEMPLATE }} --outfile ${{ env.BUILD_OUTPUT_PATH }}/main.json
+      
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3.1.0
+        with:
+          name: build_artifacts
+          path: ${{ env.BUILD_OUTPUT_PATH }}
+          if-no-files-found: error
