@@ -19,7 +19,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
   location: location
   properties: {
     accessPolicies: []
-    enableRbacAuthorization: false
+    enableRbacAuthorization: true
     enableSoftDelete: false
     enabledForDeployment: false
     enabledForDiskEncryption: false
