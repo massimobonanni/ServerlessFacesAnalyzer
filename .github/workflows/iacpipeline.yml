@@ -14,7 +14,7 @@ on:
       - "ServerlessFacesAnalyzer.IaC/**"
       
 env: 
-  BICEP_PROJECT_PATH: '${{ github.workspace }}/ServerlessFacesAnalyzer.Functions'
+  BICEP_PROJECT_PATH: '${{ github.workspace }}/ServerlessFacesAnalyzer.IaC'
   BICEP_MAIN_TEMPLATE: 'main.bicep'
   BUILD_OUTPUT_PATH: '${{ github.workspace }}/build-artifacts'
 
