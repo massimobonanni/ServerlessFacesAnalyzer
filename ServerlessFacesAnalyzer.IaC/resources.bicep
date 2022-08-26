@@ -10,7 +10,7 @@ var storageAccountName = toLower('${environmentName}dstore')
 var functionAppStorageAccountName = toLower('${environmentName}appstore')
 var funcHostingPlanName = toLower('${environmentName}-plan')
 var functionAppName = toLower('${environmentName}-func')
-var applicationInsightsName= toLower('${environmentName}-ai')
+var applicationInsightsName = toLower('${environmentName}-ai')
 var cognitiveServiceName = toLower('${environmentName}-cs')
 var keyVaultName = toLower('${environmentName}-kv')
 
@@ -18,7 +18,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
   name: keyVaultName
   location: location
   properties: {
-    accessPolicies:[]
+    accessPolicies: []
     enableRbacAuthorization: false
     enableSoftDelete: false
     enabledForDeployment: false
@@ -46,7 +46,17 @@ resource appServiceKeyVaultAssignment 'Microsoft.Authorization/roleAssignments@2
   }
 }
 
-
+resource  azureWebJobsStorageSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01'  = {
+    name: AzureWebJobsStorage
+    parent: keyVault
+    properties: {
+      attributes:{
+         enabled:true
+      }
+      value: 'DefaultEndpointsProtocol=https;AccountName=${functionAppStorageAccountName};EndpointSuffix=${environment().suffixes.storage};AccountKey=${functionAppStorageAccount.listKeys().keys[0].value}'
+    }
+}
+      
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   name: storageAccountName
   location: location
@@ -159,7 +169,7 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
       appSettings: [
         {
           name: 'AzureWebJobsStorage'
-          value: 'DefaultEndpointsProtocol=https;AccountName=${functionAppStorageAccountName};EndpointSuffix=${environment().suffixes.storage};AccountKey=${functionAppStorageAccount.listKeys().keys[0].value}'
+          value: '@Microsoft.KeyVault(SecretUri=${azureWebJobsStorageSecret})'
         }
         {
           name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
