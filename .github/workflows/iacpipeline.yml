@@ -17,7 +17,8 @@ env:
   BICEP_PROJECT_PATH: '${{ github.workspace }}/ServerlessFacesAnalyzer.IaC'
   BICEP_MAIN_TEMPLATE: 'main.bicep'
   BUILD_OUTPUT_PATH: '${{ github.workspace }}/build-artifacts'
-
+  DEPLOY_LOCATION: 'westeurope' 
+  ENVIRONMENT_NAME: 'srvlfaceanalyzer'
   
 jobs:
   build:
@@ -44,3 +45,26 @@ jobs:
           name: build_artifacts
           path: ${{ env.BUILD_OUTPUT_PATH }}
           if-no-files-found: error
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Download a Build Artifact
+        uses: actions/download-artifact@v3.0.0
+        with:
+          name: build_artifacts
+          path: ${{ env.BUILD_OUTPUT_PATH }}
+      
+      - name: Install Azure CLI
+        run: curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+        
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      - name: Deploy ARM Template
+        run: |
+          cd ${{ env.BUILD_OUTPUT_PATH }} 
+          az deployment sub create --location ${{ env.DEPLOY_LOCATION }} --template-file main.bicep --name iacpipeline --parameters environmentName=${{ env.ENVIRONMENT_NAME }}
