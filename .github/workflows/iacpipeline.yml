@@ -26,14 +26,17 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Install Azure CLI
+        run: curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+      - name: Install BICEP module
+        run: az bicep install
+        
       - name: Build BICEP template
-        uses: Azure/cli@v1
-        with:
-          azcliversion: 2.30.0
-          inlineScript: |
-            mkdir ${{ env.BUILD_OUTPUT_PATH }}
-            cd ${{ env.BUILD_OUTPUT_PATH }}
-            az bicep build --file ${{ env.BICEP_PROJECT_PATH }}/${{ env.BICEP_MAIN_TEMPLATE }} --outfile main.json
+        run: |
+          mkdir ${{ env.BUILD_OUTPUT_PATH }}
+          cd ${{ env.BUILD_OUTPUT_PATH }}
+          az bicep build --file ${{ env.BICEP_PROJECT_PATH }}/${{ env.BICEP_MAIN_TEMPLATE }} --outfile main.json
       
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.0
