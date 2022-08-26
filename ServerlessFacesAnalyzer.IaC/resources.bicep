@@ -57,6 +57,50 @@ resource  azureWebJobsStorageSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-0
     }
 }
       
+resource  appInsightInstrumentationKeySecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01'  = {
+  name: 'AppInsightInstrumentationKey'
+  parent: keyVault
+  properties: {
+    attributes:{
+       enabled:true
+    }
+    value: applicationInsights.properties.InstrumentationKey
+  }
+}
+
+resource  storageConnectionStringSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01'  = {
+  name: 'StorageConnectionString'
+  parent: keyVault
+  properties: {
+    attributes:{
+       enabled:true
+    }
+    value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};EndpointSuffix=${environment().suffixes.storage};AccountKey=${storageAccount.listKeys().keys[0].value}'
+  }
+}
+
+resource  cognitiveServiceApiKeySecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01'  = {
+  name: 'CognitiveServiceApiKey'
+  parent: keyVault
+  properties: {
+    attributes:{
+       enabled:true
+    }
+    value: cognitiveService.listKeys().key1
+  }
+}
+
+resource  cognitiveServiceEndpointSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01'  = {
+  name: 'CognitiveServiceEndpoint'
+  parent: keyVault
+  properties: {
+    attributes:{
+       enabled:true
+    }
+    value: cognitiveService.properties.endpoint
+  }
+}
+
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   name: storageAccountName
   location: location
@@ -173,7 +217,7 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
         }
         {
           name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
-          value: 'DefaultEndpointsProtocol=https;AccountName=${functionAppStorageAccountName};EndpointSuffix=${environment().suffixes.storage};AccountKey=${functionAppStorageAccount.listKeys().keys[0].value}'
+          value: '@Microsoft.KeyVault(SecretUri=${azureWebJobsStorageSecret.properties.secretUri})'
         }
         {
           name: 'WEBSITE_CONTENTSHARE'
@@ -189,7 +233,7 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
         }
         {
           name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
-          value: applicationInsights.properties.InstrumentationKey
+          value: '@Microsoft.KeyVault(SecretUri=${appInsightInstrumentationKeySecret.properties.secretUri})'
         }
         {
           name: 'FUNCTIONS_WORKER_RUNTIME'
@@ -197,7 +241,7 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
         }
         {
           name: 'StorageConnectionString'
-          value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};EndpointSuffix=${environment().suffixes.storage};AccountKey=${storageAccount.listKeys().keys[0].value}'
+          value: '@Microsoft.KeyVault(SecretUri=${storageConnectionStringSecret.properties.secretUri})'
         }
         {
           name: 'DestinationContainer'
@@ -205,11 +249,11 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
         }
         {
           name: 'FaceAnalyzer:ServiceEndpoint'
-          value: cognitiveService.properties.endpoint
+          value: '@Microsoft.KeyVault(SecretUri=${cognitiveServiceEndpointSecret.properties.secretUri})'
         }
         {
           name: 'FaceAnalyzer:ServiceKey'
-          value: cognitiveService.listKeys().key1
+          value: '@Microsoft.KeyVault(SecretUri=${cognitiveServiceApiKeySecret.properties.secretUri})'
         }
         {
           name: 'FaceAnalyzer:AgeThreshold'
