@@ -31,7 +31,6 @@ jobs:
         with:
           azcliversion: 2.30.0
           inlineScript: |
-            publishfolder="${{ github.workspace }}/output"
             mkdir ${{ env.BUILD_OUTPUT_PATH }}
             cd ${{ env.BUILD_OUTPUT_PATH }}
             az bicep build --file ${{ env.BICEP_PROJECT_PATH }}/${{ env.BICEP_MAIN_TEMPLATE }} --outfile main.json
