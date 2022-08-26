@@ -31,8 +31,10 @@ jobs:
         with:
           azcliversion: 2.30.0
           inlineScript: |
-            cd ${{ env.BICEP_PROJECT_PATH }}
-            az bicep build --file ${{ env.BICEP_MAIN_TEMPLATE }} --outfile ${{ env.BUILD_OUTPUT_PATH }}/main.json
+            publishfolder="${{ github.workspace }}/output"
+            mkdir ${{ env.BUILD_OUTPUT_PATH }}
+            cd ${{ env.BUILD_OUTPUT_PATH }}
+            az bicep build --file ${{ env.BICEP_PROJECT_PATH }}/${{ env.BICEP_MAIN_TEMPLATE }} --outfile main.json
       
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.0
