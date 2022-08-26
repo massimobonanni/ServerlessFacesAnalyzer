@@ -169,7 +169,7 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
       appSettings: [
         {
           name: 'AzureWebJobsStorage'
-          value: '@Microsoft.KeyVault(SecretUri=${azureWebJobsStorageSecret})'
+          value: '@Microsoft.KeyVault(SecretUri=${azureWebJobsStorageSecret.properties.secretUri})'
         }
         {
           name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
