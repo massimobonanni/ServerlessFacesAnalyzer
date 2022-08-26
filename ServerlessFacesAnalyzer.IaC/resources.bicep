@@ -47,7 +47,7 @@ resource appServiceKeyVaultAssignment 'Microsoft.Authorization/roleAssignments@2
 }
 
 resource  azureWebJobsStorageSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01'  = {
-    name: AzureWebJobsStorage
+    name: 'AzureWebJobsStorage'
     parent: keyVault
     properties: {
       attributes:{
