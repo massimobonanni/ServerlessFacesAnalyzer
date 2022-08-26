@@ -14,7 +14,7 @@ var applicationInsightsName= toLower('${environmentName}-ai')
 var cognitiveServiceName = toLower('${environmentName}-cs')
 var keyVaultName = toLower('${environmentName}-kv')
 
-resource vault 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
   name: keyVaultName
   location: location
   properties: {
@@ -33,6 +33,16 @@ resource vault 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
       defaultAction: 'Allow'
       bypass: 'AzureServices'
     }
+  }
+}
+
+resource appServiceKeyVaultAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+  name: guid('Key Vault Secret User', functionAppName, subscription().subscriptionId)
+  scope: keyVault
+  properties: {
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6') // this is the role "Key Vault Secrets User"
+    principalId: functionApp.identity.principalId
+    principalType: 'ServicePrincipal'
   }
 }
 
