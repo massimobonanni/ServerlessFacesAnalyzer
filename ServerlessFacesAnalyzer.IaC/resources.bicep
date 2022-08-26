@@ -12,6 +12,30 @@ var funcHostingPlanName = toLower('${environmentName}-plan')
 var functionAppName = toLower('${environmentName}-func')
 var applicationInsightsName= toLower('${environmentName}-ai')
 var cognitiveServiceName = toLower('${environmentName}-cs')
+var keyVaultName = toLower('${environmentName}-kv')
+
+resource vault 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
+  name: keyVaultName
+  location: location
+  properties: {
+    accessPolicies:[]
+    enableRbacAuthorization: false
+    enableSoftDelete: false
+    enabledForDeployment: false
+    enabledForDiskEncryption: false
+    enabledForTemplateDeployment: false
+    tenantId: subscription().tenantId
+    sku: {
+      name: 'standard'
+      family: 'A'
+    }
+    networkAcls: {
+      defaultAction: 'Allow'
+      bypass: 'AzureServices'
+    }
+  }
+}
+
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   name: storageAccountName
