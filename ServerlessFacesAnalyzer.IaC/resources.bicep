@@ -109,7 +109,7 @@ resource eventGridTopicEndpointSecret 'Microsoft.KeyVault/vaults/secrets@2022-07
     attributes: {
       enabled: true
     }
-    value: eventGridTopic.listKeys().key1
+    value: eventGridTopic.properties.endpoint
   }
 }
 
@@ -120,7 +120,7 @@ resource eventGridTopicKeySecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' 
     attributes: {
       enabled: true
     }
-    value: eventGridTopic.properties.endpoint
+    value: eventGridTopic.listKeys().key1
   }
 }
 
