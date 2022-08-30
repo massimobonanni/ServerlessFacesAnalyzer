@@ -50,7 +50,7 @@ namespace ServerlessFacesAnalyzer.Functions
         public async Task<IActionResult> AnalyzeFaceFromStream(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "analyze")] HttpRequest req,
             [Blob("%DestinationContainer%", FileAccess.ReadWrite, Connection = "StorageConnectionString")] CloudBlobContainer destinationContainer,
-            [EventGrid(TopicEndpointUri = "TopicEndpoint", TopicKeySetting = "TopicKey")] IAsyncCollector<EventGridEvent> eventCollector,)
+            [EventGrid(TopicEndpointUri = "TopicEndpoint", TopicKeySetting = "TopicKey")] IAsyncCollector<EventGridEvent> eventCollector)
         {
             logger.LogInformation("C# HTTP trigger function processed a request.");
 
