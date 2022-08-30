@@ -18,6 +18,8 @@ using ServerlessFacesAnalyzer.Core.Interfaces;
 using Microsoft.Extensions.Configuration;
 using ServerlessFacesAnalyzer.Core.Models;
 using ServerlessFacesAnalyzer.Functions.Requestes;
+using Microsoft.Azure.WebJobs.Extensions.EventGrid;
+using Azure.Messaging.EventGrid;
 
 namespace ServerlessFacesAnalyzer.Functions
 {
@@ -47,7 +49,8 @@ namespace ServerlessFacesAnalyzer.Functions
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Description = "There aren't any files sent with the request")]
         public async Task<IActionResult> AnalyzeFaceFromStream(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "analyze")] HttpRequest req,
-            [Blob("%DestinationContainer%", FileAccess.ReadWrite, Connection = "StorageConnectionString")] CloudBlobContainer destinationContainer)
+            [Blob("%DestinationContainer%", FileAccess.ReadWrite, Connection = "StorageConnectionString")] CloudBlobContainer destinationContainer,
+            [EventGrid(TopicEndpointUri = "TopicEndpoint", TopicKeySetting = "TopicKey")] IAsyncCollector<EventGridEvent> eventCollector,)
         {
             logger.LogInformation("C# HTTP trigger function processed a request.");
 
@@ -59,8 +62,9 @@ namespace ServerlessFacesAnalyzer.Functions
             var file = req.Form.Files[0];
             var operationContext = OperationContext.CreateContext(file);
             
+            // Upload original image on storage account
             await file.UploadToStorageAsync(operationContext.BlobName, destinationContainer);
-
+            // Analyze image
             var faceresult = await file.AnalyzeAsync(this.faceAnalyzer);
 
             var response = new AnalyzeFaceFromStreamResponse()
@@ -73,7 +77,8 @@ namespace ServerlessFacesAnalyzer.Functions
 
             var resultBlobName = operationContext.GenerateResultFileName();
             await destinationContainer.SerializeObjectToBlobAsync(resultBlobName, response);
-
+            
+            // Elaborate faces
             for (int i = 0; i < faceresult.Faces.Count; i++)
             {
                 var face = faceresult.Faces[i];
@@ -82,9 +87,19 @@ namespace ServerlessFacesAnalyzer.Functions
                 using (var sourceStream = file.OpenReadStream())
                 using (var faceBlobStream = faceBlob.OpenWrite())
                 {
+                    // Extract face from original image
                     await this.imageProcessor.CropImageAsync(sourceStream, face.Rectangle, faceBlobStream);
                 }
             }
+
+            // Send event using Event Grid Custom Topic
+            var @event = new EventGridEvent(
+                  subject: operationContext.BlobName,
+                  eventType: "ImageAnalyzed",
+                  dataVersion: "1.0",
+                  data: response);
+
+            await eventCollector.AddAsync(@event);
 
             return new OkObjectResult(response);
         }
