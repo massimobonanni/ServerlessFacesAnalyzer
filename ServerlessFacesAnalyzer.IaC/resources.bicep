@@ -13,6 +13,7 @@ var functionAppName = toLower('${environmentName}-func')
 var applicationInsightsName = toLower('${environmentName}-ai')
 var cognitiveServiceName = toLower('${environmentName}-cs')
 var keyVaultName = toLower('${environmentName}-kv')
+var eventGridTopicName = toLower('${environmentName}-topic')
 
 resource keyVault 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
   name: keyVaultName
@@ -46,58 +47,80 @@ resource appServiceKeyVaultAssignment 'Microsoft.Authorization/roleAssignments@2
   }
 }
 
-resource  azureWebJobsStorageSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01'  = {
-    name: 'AzureWebJobsStorage'
-    parent: keyVault
-    properties: {
-      attributes:{
-         enabled:true
-      }
-      value: 'DefaultEndpointsProtocol=https;AccountName=${functionAppStorageAccountName};EndpointSuffix=${environment().suffixes.storage};AccountKey=${functionAppStorageAccount.listKeys().keys[0].value}'
+resource azureWebJobsStorageSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
+  name: 'AzureWebJobsStorage'
+  parent: keyVault
+  properties: {
+    attributes: {
+      enabled: true
     }
+    value: 'DefaultEndpointsProtocol=https;AccountName=${functionAppStorageAccountName};EndpointSuffix=${environment().suffixes.storage};AccountKey=${functionAppStorageAccount.listKeys().keys[0].value}'
+  }
 }
-      
-resource  appInsightInstrumentationKeySecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01'  = {
+
+resource appInsightInstrumentationKeySecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
   name: 'AppInsightInstrumentationKey'
   parent: keyVault
   properties: {
-    attributes:{
-       enabled:true
+    attributes: {
+      enabled: true
     }
     value: applicationInsights.properties.InstrumentationKey
   }
 }
 
-resource  storageConnectionStringSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01'  = {
+resource storageConnectionStringSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
   name: 'StorageConnectionString'
   parent: keyVault
   properties: {
-    attributes:{
-       enabled:true
+    attributes: {
+      enabled: true
     }
     value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};EndpointSuffix=${environment().suffixes.storage};AccountKey=${storageAccount.listKeys().keys[0].value}'
   }
 }
 
-resource  cognitiveServiceApiKeySecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01'  = {
+resource cognitiveServiceApiKeySecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
   name: 'CognitiveServiceApiKey'
   parent: keyVault
   properties: {
-    attributes:{
-       enabled:true
+    attributes: {
+      enabled: true
     }
     value: cognitiveService.listKeys().key1
   }
 }
 
-resource  cognitiveServiceEndpointSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01'  = {
+resource cognitiveServiceEndpointSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
   name: 'CognitiveServiceEndpoint'
   parent: keyVault
   properties: {
-    attributes:{
-       enabled:true
+    attributes: {
+      enabled: true
     }
     value: cognitiveService.properties.endpoint
+  }
+}
+
+resource eventGridTopicEndpointSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
+  name: 'EventGridTopicServiceEndpoint'
+  parent: keyVault
+  properties: {
+    attributes: {
+      enabled: true
+    }
+    value: eventGridTopic.listKeys().key1
+  }
+}
+
+resource eventGridTopicKeySecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
+  name: 'EventGridTopicKey'
+  parent: keyVault
+  properties: {
+    attributes: {
+      enabled: true
+    }
+    value: eventGridTopic.properties.endpoint
   }
 }
 
@@ -259,10 +282,29 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
           name: 'FaceAnalyzer:AgeThreshold'
           value: '18'
         }
+        {
+          name: 'TopicEndpoint'
+          value: '@Microsoft.KeyVault(SecretUri=${eventGridTopicEndpointSecret.properties.secretUri})'
+        }
+        {
+          name: 'TopicKey'
+          value: '@Microsoft.KeyVault(SecretUri=${eventGridTopicKeySecret.properties.secretUri})'
+        }
       ]
       ftpsState: 'FtpsOnly'
       minTlsVersion: '1.2'
     }
     httpsOnly: true
+  }
+}
+
+resource eventGridTopic 'Microsoft.EventGrid/topics@2022-06-15' = {
+  name: eventGridTopicName
+  location: location
+  properties: {
+    inputSchema: 'EventGridSchema'
+    publicNetworkAccess: 'Enabled'
+    disableLocalAuth: false
+    dataResidencyBoundary: 'WithinGeopair'
   }
 }
