@@ -21,7 +21,7 @@ using ServerlessFacesAnalyzer.Functions.Requestes;
 using Microsoft.Azure.WebJobs.Extensions.EventGrid;
 using Azure.Messaging.EventGrid;
 
-namespace ServerlessFacesAnalyzer.Functions
+namespace ServerlessFacesAnalyzer.Functions.Functions
 {
     public class AnalyzeFunction
     {
@@ -35,7 +35,7 @@ namespace ServerlessFacesAnalyzer.Functions
             IImageProcessor imageProcessor,
             ILogger<AnalyzeFunction> log)
         {
-            this.logger = log;
+            logger = log;
             this.faceAnalyzer = faceAnalyzer;
             this.imageProcessor = imageProcessor;
             this.configuration = configuration;
@@ -61,11 +61,11 @@ namespace ServerlessFacesAnalyzer.Functions
 
             var file = req.Form.Files[0];
             var operationContext = OperationContext.CreateContext(file);
-            
+
             // Upload original image on storage account
             await file.UploadToStorageAsync(operationContext.BlobName, destinationContainer);
             // Analyze image
-            var faceresult = await file.AnalyzeAsync(this.faceAnalyzer);
+            var faceresult = await file.AnalyzeAsync(faceAnalyzer);
 
             var response = new AnalyzeFaceFromStreamResponse()
             {
@@ -77,7 +77,7 @@ namespace ServerlessFacesAnalyzer.Functions
 
             var resultBlobName = operationContext.GenerateResultFileName();
             await destinationContainer.SerializeObjectToBlobAsync(resultBlobName, response);
-            
+
             // Elaborate faces
             for (int i = 0; i < faceresult.Faces.Count; i++)
             {
@@ -88,7 +88,7 @@ namespace ServerlessFacesAnalyzer.Functions
                 using (var faceBlobStream = faceBlob.OpenWrite())
                 {
                     // Extract face from original image
-                    await this.imageProcessor.CropImageAsync(sourceStream, face.Rectangle, faceBlobStream);
+                    await imageProcessor.CropImageAsync(sourceStream, face.Rectangle, faceBlobStream);
                 }
             }
 
