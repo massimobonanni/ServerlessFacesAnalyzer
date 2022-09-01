@@ -63,6 +63,13 @@ namespace ServerlessFacesAnalyzer.Functions.DurableFunctions.Orchestrators
 
             await Task.WhenAll(tasks);
 
+            await context.CallActivityAsync(nameof(SendNotificationToEventGridActivity),
+                new SendNotificationToEventGridDto()
+                {
+                    OperationContext = operationContext,
+                    AnalysisResult = response
+                });
+
             return response;
         }
 
