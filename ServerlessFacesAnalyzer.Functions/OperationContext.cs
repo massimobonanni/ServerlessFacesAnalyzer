@@ -8,22 +8,24 @@ using System.Threading.Tasks;
 
 namespace ServerlessFacesAnalyzer.Functions
 {
-    internal class OperationContext
+    public class OperationContext
     {
-        private OperationContext()
+        public OperationContext()
         {
 
         }
 
-        public string OperationId { get; private set; }
-        public string Extension { get; private set; }
-        public string BlobFolder { get; private set; }
-        public string BlobName { get; private set; }
+        public string OperationId { get; set; }
+        public string Extension { get; set; }
+        public string BlobFolder { get; set; }
+        public string BlobName { get; set; }
+        public string OriginalFileName { get; set; }
 
         public static OperationContext CreateContext(IFormFile file)
         {
             var context = new OperationContext();
             context.OperationId = Guid.NewGuid().ToString();
+            context.OriginalFileName = file.FileName;
             var dateNow = DateTime.UtcNow;
             context.Extension = (new FileInfo(file.FileName)).Extension;
             context.BlobFolder = $"{dateNow:yyyy}\\{dateNow:MM}\\{dateNow:dd}\\{context.OperationId}";
@@ -31,7 +33,7 @@ namespace ServerlessFacesAnalyzer.Functions
             return context;
         }
 
-        public string GenerateResultFileName()=> $"{BlobFolder}\\result.json";
+        public string GenerateResultFileName() => $"{BlobFolder}\\result.json";
         public string GenerateFaceFileName(int fileIndex) => $"{BlobFolder}\\face{fileIndex + 1}{Extension}";
 
     }

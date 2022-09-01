@@ -5,11 +5,11 @@ VisualStudioVersion = 17.2.32802.462
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerlessFacesAnalyzer.Functions", "ServerlessFacesAnalyzer.Functions\ServerlessFacesAnalyzer.Functions.csproj", "{A170B815-0855-44F4-A880-C10290CDCDC0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerlessFacesAnalyzer.Core", "ServerlessFacesAnalyzer.Core\ServerlessFacesAnalyzer.Core.csproj", "{498FB0B5-6669-44A2-80DB-685EDBF0FECE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerlessFacesAnalyzer.Core", "ServerlessFacesAnalyzer.Core\ServerlessFacesAnalyzer.Core.csproj", "{498FB0B5-6669-44A2-80DB-685EDBF0FECE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerlessFacesAnalyzer.Cognitive", "ServerlessFacesAnalyzer.Cognitive\ServerlessFacesAnalyzer.Cognitive.csproj", "{FDA553DB-7609-4661-98E2-4A8E38A8C49C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerlessFacesAnalyzer.Cognitive", "ServerlessFacesAnalyzer.Cognitive\ServerlessFacesAnalyzer.Cognitive.csproj", "{FDA553DB-7609-4661-98E2-4A8E38A8C49C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerlessFacesAnalyzer.ImageProcessing", "ServerlessFacesAnalyzer.ImageProcessing\ServerlessFacesAnalyzer.ImageProcessing.csproj", "{925FF01E-CE6F-4406-9659-6139FEA48C64}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerlessFacesAnalyzer.ImageProcessing", "ServerlessFacesAnalyzer.ImageProcessing\ServerlessFacesAnalyzer.ImageProcessing.csproj", "{925FF01E-CE6F-4406-9659-6139FEA48C64}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

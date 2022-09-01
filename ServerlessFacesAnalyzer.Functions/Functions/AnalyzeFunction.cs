@@ -52,11 +52,7 @@ namespace ServerlessFacesAnalyzer.Functions.Functions
             [Blob("%DestinationContainer%", FileAccess.ReadWrite, Connection = "StorageConnectionString")] CloudBlobContainer destinationContainer,
             [EventGrid(TopicEndpointUri = "TopicEndpoint", TopicKeySetting = "TopicKey")] IAsyncCollector<EventGridEvent> eventCollector)
         {
-            logger.LogInformation("C# HTTP trigger function processed a request.");
-
-            if (!req.ContentType.StartsWith("multipart/form-data"))
-                return new BadRequestResult();
-            if (req.Form == null || req.Form.Files == null || !req.Form.Files.Any())
+            if (!req.IsValid())
                 return new BadRequestResult();
 
             var file = req.Form.Files[0];
@@ -70,7 +66,7 @@ namespace ServerlessFacesAnalyzer.Functions.Functions
             var response = new AnalyzeFaceFromStreamResponse()
             {
                 OperationId = operationContext.OperationId,
-                OriginalFileName = file.FileName,
+                OriginalFileName = operationContext.OriginalFileName,
                 FileName = operationContext.BlobName,
                 AnalysisResult = faceresult
             };

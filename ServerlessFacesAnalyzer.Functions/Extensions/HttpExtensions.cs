@@ -35,5 +35,14 @@ namespace Microsoft.AspNetCore.Http
             }
             return faceresult;
         }
+
+        public static bool IsValid(this HttpRequest req)
+        {
+            if (!req.ContentType.StartsWith("multipart/form-data"))
+                return false;
+            if (req.Form == null || req.Form.Files == null || !req.Form.Files.Any())
+                return false;
+            return true;
+        }
     }
 }
