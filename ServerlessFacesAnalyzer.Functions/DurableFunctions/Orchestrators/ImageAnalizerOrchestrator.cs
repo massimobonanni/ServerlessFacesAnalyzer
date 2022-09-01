@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
@@ -49,19 +50,22 @@ namespace ServerlessFacesAnalyzer.Functions.DurableFunctions.Orchestrators
                     FaceResultResponse = response
                 });
 
-            var tasks = new Task[faceresult.Faces.Count];
-            for (int i = 0; i < faceresult.Faces.Count; i++)
+            if (faceresult.Faces.Any())
             {
-                tasks[i] = context.CallActivityAsync(nameof(ExtractFaceFromImageActivity),
-                    new ExtractFaceFromImageDto() 
-                    { 
-                        OperationContext=operationContext,
-                        Face = faceresult.Faces[i],
-                        FaceIndex=i
-                    });
-            }
+                var tasks = new Task[faceresult.Faces.Count];
+                for (int i = 0; i < faceresult.Faces.Count; i++)
+                {
+                    tasks[i] = context.CallActivityAsync(nameof(ExtractFaceFromImageActivity),
+                        new ExtractFaceFromImageDto()
+                        {
+                            OperationContext = operationContext,
+                            Face = faceresult.Faces[i],
+                            FaceIndex = i
+                        });
+                }
 
-            await Task.WhenAll(tasks);
+                await Task.WhenAll(tasks);
+            }
 
             await context.CallActivityAsync(nameof(SendNotificationToEventGridActivity),
                 new SendNotificationToEventGridDto()
