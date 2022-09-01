@@ -8,12 +8,14 @@ on:
     paths-ignore:
       - "ServerlessFacesAnalyzer.IaC/**"
       - ".github/**"
+      - "Documentation/**"
   pull_request:
     branches: 
       - "main"
     paths-ignore:
       - "ServerlessFacesAnalyzer.IaC/**"
       - ".github/**"
+      - "Documentation/**"
 
 env: 
   FUNCTION_APP_NAME: "srvlfaceanalyzer-func"
