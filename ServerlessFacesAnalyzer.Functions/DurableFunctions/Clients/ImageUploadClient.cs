@@ -17,6 +17,7 @@ using Microsoft.OpenApi.Models;
 using ServerlessFacesAnalyzer.Functions.Requestes;
 using System.Net;
 using System.Linq;
+using ServerlessFacesAnalyzer.Functions.DurableFunctions.Orchestrators;
 
 namespace ServerlessFacesAnalyzer.Functions.DurableFunctions.Clients
 {
@@ -52,9 +53,13 @@ namespace ServerlessFacesAnalyzer.Functions.DurableFunctions.Clients
 
             await file.UploadToStorageAsync(operationContext.BlobName, destinationContainer);
 
-                await client.StartNewAsync("ImageAnalizerOrchestrator", operationContext.OperationId, operationContext);
+            await client.StartNewAsync(nameof(ImageAnalizerOrchestrator), 
+                operationContext.OperationId, operationContext);
 
-            return new OkObjectResult(operationContext);
+            var result=await client.WaitForCompletionOrCreateCheckStatusResponseAsync(req, 
+                operationContext.OperationId, TimeSpan.FromSeconds(5));
+
+            return result;
         }
     }
 }
