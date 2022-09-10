@@ -161,7 +161,7 @@ resource analysisResultRule 'Microsoft.Storage/storageAccounts/managementPolicie
                   daysAfterModificationGreaterThan: 1
                 }
                 delete: {
-                  daysAfterModificationGreaterThan: 30
+                  daysAfterModificationGreaterThan: 10
                 }
               }
             }
