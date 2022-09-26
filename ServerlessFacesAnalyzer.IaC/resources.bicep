@@ -308,3 +308,16 @@ resource eventGridTopic 'Microsoft.EventGrid/topics@2022-06-15' = {
     dataResidencyBoundary: 'WithinGeopair'
   }
 }
+
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' = {
+  name: 'maxdemostore1234234'
+  location: location
+  sku: {
+    name: 'Standard_LRS'
+  }
+  kind: 'StorageV2'
+  properties: {
+    accessTier: 'Hot'
+  }
+}
