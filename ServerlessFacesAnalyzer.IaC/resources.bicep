@@ -136,18 +136,6 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   }
 }
 
-resource newStorageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' = {
-  name: 'maxdemostore1234234'
-  location: location
-  sku: {
-    name: 'Standard_LRS'
-  }
-  kind: 'StorageV2'
-  properties: {
-    accessTier: 'Hot'
-  }
-}
-
 resource containers 'Microsoft.Storage/storageAccounts/blobServices/containers@2019-06-01' = {
   name: '${storageAccount.name}/default/faces'
   properties: {
