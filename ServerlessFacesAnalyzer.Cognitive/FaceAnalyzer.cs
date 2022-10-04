@@ -19,7 +19,6 @@ namespace ServerlessFacesAnalyzer.Cognitive
             const string ConfigRootName = "FaceAnalyzer";
             public string ServiceEndpoint { get; set; }
             public string ServiceKey { get; set; }
-            public int AgeThreshold { get; set; }
 
             public List<VisualFeatureTypes?> Features = new List<VisualFeatureTypes?>()
             {
@@ -35,7 +34,6 @@ namespace ServerlessFacesAnalyzer.Cognitive
                 var retVal = new Configuration();
                 retVal.ServiceEndpoint = config[$"{ConfigRootName}:ServiceEndpoint"];
                 retVal.ServiceKey = config[$"{ConfigRootName}:ServiceKey"];
-                retVal.AgeThreshold = config.GetValue<int>($"{ConfigRootName}:AgeThreshold");
                 return retVal;
             }
         }
@@ -69,10 +67,7 @@ namespace ServerlessFacesAnalyzer.Cognitive
 
             foreach (var face in imageAnalysis.Faces)
             {
-                if (face.Age >= config.AgeThreshold)
-                {
-                    result.Faces.Add(face.ToFaceInfo());
-                }
+                result.Faces.Add(face.ToFaceInfo());
             }
             return result;
         }
