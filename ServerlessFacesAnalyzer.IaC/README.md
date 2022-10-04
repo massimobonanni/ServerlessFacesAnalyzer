@@ -9,7 +9,7 @@ az deployment sub create --location <your region> --template-file main.bicep
 ```
 
 where 
-- `<your location>` is the location where you want to create the deployment
+- `<your region>` is the location where you want to create the deployment
 
 
 You can also set these parameters:

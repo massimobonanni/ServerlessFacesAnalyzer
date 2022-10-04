@@ -233,69 +233,35 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
   properties: {
     serverFarmId: funcHostingPlan.id
     siteConfig: {
-      appSettings: [
-        {
-          name: 'AzureWebJobsStorage'
-          value: '@Microsoft.KeyVault(SecretUri=${azureWebJobsStorageSecret.properties.secretUri})'
-        }
-        {
-          name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
-          value: '@Microsoft.KeyVault(SecretUri=${azureWebJobsStorageSecret.properties.secretUri})'
-        }
-        {
-          name: 'WEBSITE_CONTENTSHARE'
-          value: toLower(functionAppName)
-        }
-        {
-          name: 'FUNCTIONS_EXTENSION_VERSION'
-          value: '~4'
-        }
-        {
-          name: 'WEBSITE_NODE_DEFAULT_VERSION'
-          value: '~10'
-        }
-        {
-          name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
-          value: '@Microsoft.KeyVault(SecretUri=${appInsightInstrumentationKeySecret.properties.secretUri})'
-        }
-        {
-          name: 'FUNCTIONS_WORKER_RUNTIME'
-          value: 'dotnet'
-        }
-        {
-          name: 'StorageConnectionString'
-          value: '@Microsoft.KeyVault(SecretUri=${storageConnectionStringSecret.properties.secretUri})'
-        }
-        {
-          name: 'DestinationContainer'
-          value: 'faces'
-        }
-        {
-          name: 'FaceAnalyzer:ServiceEndpoint'
-          value: '@Microsoft.KeyVault(SecretUri=${cognitiveServiceEndpointSecret.properties.secretUri})'
-        }
-        {
-          name: 'FaceAnalyzer:ServiceKey'
-          value: '@Microsoft.KeyVault(SecretUri=${cognitiveServiceApiKeySecret.properties.secretUri})'
-        }
-        {
-          name: 'FaceAnalyzer:AgeThreshold'
-          value: '18'
-        }
-        {
-          name: 'TopicEndpoint'
-          value: '@Microsoft.KeyVault(SecretUri=${eventGridTopicEndpointSecret.properties.secretUri})'
-        }
-        {
-          name: 'TopicKey'
-          value: '@Microsoft.KeyVault(SecretUri=${eventGridTopicKeySecret.properties.secretUri})'
-        }
-      ]
       ftpsState: 'FtpsOnly'
       minTlsVersion: '1.2'
     }
     httpsOnly: true
   }
+}
+resource appSettings 'Microsoft.Web/sites/config@2022-03-01' = {
+  name: 'appsettings'
+  parent: functionApp
+  properties: {
+    APPINSIGHTS_INSTRUMENTATIONKEY: '@Microsoft.KeyVault(SecretUri=${appInsightInstrumentationKeySecret.properties.secretUri})'
+    AzureWebJobsStorage: '@Microsoft.KeyVault(SecretUri=${azureWebJobsStorageSecret.properties.secretUri})'
+    WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: '@Microsoft.KeyVault(SecretUri=${azureWebJobsStorageSecret.properties.secretUri})'
+    WEBSITE_CONTENTSHARE: toLower(functionAppName)
+    FUNCTIONS_EXTENSION_VERSION: '~4'
+    WEBSITE_NODE_DEFAULT_VERSION: '~10'
+    FUNCTIONS_WORKER_RUNTIME: 'dotnet'
+    StorageConnectionString: '@Microsoft.KeyVault(SecretUri=${storageConnectionStringSecret.properties.secretUri})'
+    DestinationContainer: 'faces'
+    'FaceAnalyzer:ServiceEndpoint': '@Microsoft.KeyVault(SecretUri=${cognitiveServiceEndpointSecret.properties.secretUri})'
+    'FaceAnalyzer:ServiceKey': '@Microsoft.KeyVault(SecretUri=${cognitiveServiceApiKeySecret.properties.secretUri})'
+    'FaceAnalyzer:AgeThreshold': '18'
+    TopicEndpoint: '@Microsoft.KeyVault(SecretUri=${eventGridTopicEndpointSecret.properties.secretUri})'
+    TopicKey: '@Microsoft.KeyVault(SecretUri=${eventGridTopicKeySecret.properties.secretUri})'
+  }
+  dependsOn:[
+    keyVault
+    appServiceKeyVaultAssignment
+  ]
 }
 
 resource eventGridTopic 'Microsoft.EventGrid/topics@2022-06-15' = {
