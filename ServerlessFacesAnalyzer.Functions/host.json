@@ -6,12 +6,12 @@
     }
   },
   "logging": {
-    //"logLevel": {
-    //  "default": "Information",
-    //  "Host.Results": "Error",
-    //  "Function": "Information",
-    //  "Host.Aggregator": "Error"
-    //},
+    "logLevel": {
+      "default": "Information",
+      "Host.Results": "Error",
+      "Function": "Information",
+      "Host.Aggregator": "Error"
+    },
     "applicationInsights": {
       "samplingSettings": {
         "isEnabled": true,
