@@ -67,4 +67,6 @@ jobs:
       - name: Deploy ARM Template
         run: |
           cd ${{ env.BUILD_OUTPUT_PATH }} 
-          az deployment sub create --location ${{ env.DEPLOY_LOCATION }} --template-file main.json 
+          az deployment sub create --location ${{ env.DEPLOY_LOCATION }} --template-file main.json --name ${{ env.deploymentName }}
+        env:
+          deploymentName: ServerlessfaceAnalyzer_${{ github.run_id }}
