@@ -254,7 +254,6 @@ resource appSettings 'Microsoft.Web/sites/config@2022-03-01' = {
     DestinationContainer: 'faces'
     'FaceAnalyzer:ServiceEndpoint': '@Microsoft.KeyVault(SecretUri=${cognitiveServiceEndpointSecret.properties.secretUri})'
     'FaceAnalyzer:ServiceKey': '@Microsoft.KeyVault(SecretUri=${cognitiveServiceApiKeySecret.properties.secretUri})'
-    'FaceAnalyzer:AgeThreshold': '18'
     TopicEndpoint: '@Microsoft.KeyVault(SecretUri=${eventGridTopicEndpointSecret.properties.secretUri})'
     TopicKey: '@Microsoft.KeyVault(SecretUri=${eventGridTopicKeySecret.properties.secretUri})'
   }
