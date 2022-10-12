@@ -124,18 +124,6 @@ resource eventGridTopicKeySecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' 
   }
 }
 
-resource az305storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' = {
-  name: 'ertretrtre45454yeyt'
-  location: location
-  sku: {
-    name: 'Standard_LRS'
-  }
-  kind: 'StorageV2'
-  properties: {
-    accessTier: 'Cool'
-  }
-}
-
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   name: storageAccountName
   location: location
