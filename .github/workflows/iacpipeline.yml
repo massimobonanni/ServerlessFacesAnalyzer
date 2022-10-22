@@ -64,6 +64,13 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIAL }}
       
+      - name: Validate ARM Template
+        run: |
+          cd ${{ env.BUILD_OUTPUT_PATH }} 
+          az deployment sub validate --location ${{ env.DEPLOY_LOCATION }} --template-file main.json --name ${{ env.deploymentName }}
+        env:
+          deploymentName: ServerlessfaceAnalyzer_${{ github.run_id }}
+          
       - name: Deploy ARM Template
         run: |
           cd ${{ env.BUILD_OUTPUT_PATH }} 
