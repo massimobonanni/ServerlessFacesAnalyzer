@@ -23,3 +23,13 @@ module resourcesModule 'resources.bicep' = {
     environmentName: environmentName
   }
 }
+
+module eventGridViewer 'eventGridViewer.bicep' = {
+  scope: resourceGroup
+  name: 'eventGridViewer'
+  params: {
+    location: location
+    environmentName: environmentName
+    eventGridTopicName: resourcesModule.outputs.eventGridTopicName
+  }
+}

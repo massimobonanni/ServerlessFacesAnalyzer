@@ -274,4 +274,4 @@ resource eventGridTopic 'Microsoft.EventGrid/topics@2022-06-15' = {
   }
 }
 
-
+output eventGridTopicName string = eventGridTopic.name
