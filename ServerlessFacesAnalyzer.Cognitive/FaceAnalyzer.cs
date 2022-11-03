@@ -25,6 +25,7 @@ namespace ServerlessFacesAnalyzer.Cognitive
             {
                 VisualFeatureTypes.Faces
             };
+
             public List<Details?> Details = new List<Details?>()
             {
                 Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models.Details.Landmarks

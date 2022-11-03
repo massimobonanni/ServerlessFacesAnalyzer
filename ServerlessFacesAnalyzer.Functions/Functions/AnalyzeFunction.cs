@@ -20,6 +20,7 @@ using ServerlessFacesAnalyzer.Core.Models;
 using ServerlessFacesAnalyzer.Functions.Requestes;
 using Microsoft.Azure.WebJobs.Extensions.EventGrid;
 using Azure.Messaging.EventGrid;
+using static System.Net.WebRequestMethods;
 
 namespace ServerlessFacesAnalyzer.Functions.Functions
 {
@@ -60,9 +61,30 @@ namespace ServerlessFacesAnalyzer.Functions.Functions
 
             // Upload original image on storage account
             await file.UploadToStorageAsync(operationContext.BlobName, destinationContainer);
+            
             // Analyze image
             var faceresult = await file.AnalyzeAsync(faceAnalyzer);
 
+            //Create response DTO
+            var response = await CreateResponseAsync(operationContext, faceresult, destinationContainer, file);
+
+            // Send event using Event Grid Custom Topic
+            var @event = new EventGridEvent(
+                  subject: operationContext.BlobName,
+                  eventType: "ImageAnalyzed",
+                  dataVersion: "1.0",
+                  data: response);
+
+            await eventCollector.AddAsync(@event);
+
+            return new OkObjectResult(response);
+        }
+
+
+        private async Task<AnalyzeFaceFromStreamResponse> CreateResponseAsync(OperationContext operationContext,
+            FaceAnalyzerResult faceresult, CloudBlobContainer destinationContainer,IFormFile file)
+        {
+            //Create response DTO
             var response = new AnalyzeFaceFromStreamResponse()
             {
                 OperationId = operationContext.OperationId,
@@ -88,18 +110,7 @@ namespace ServerlessFacesAnalyzer.Functions.Functions
                 }
             }
 
-            // Send event using Event Grid Custom Topic
-            var @event = new EventGridEvent(
-                  subject: operationContext.BlobName,
-                  eventType: "ImageAnalyzed",
-                  dataVersion: "1.0",
-                  data: response);
-
-            await eventCollector.AddAsync(@event);
-
-            return new OkObjectResult(response);
+            return response;
         }
-
-
     }
 }
