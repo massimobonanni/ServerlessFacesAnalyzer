@@ -70,6 +70,7 @@ resource eventViewerAppServiceDeploy 'Microsoft.Web/sites/sourcecontrols@2022-03
 // EventGrid Event Viewer Subscription
 //-------------------------------------------------------------
 var eventViewerSubName=toLower('${environmentName}-eventviewersub')
+
 resource eventGridTopic 'Microsoft.EventGrid/topics@2022-06-15' existing = {
   name: eventGridTopicName
 }
@@ -85,6 +86,9 @@ resource eventViewerSubscription 'Microsoft.EventGrid/eventSubscriptions@2022-06
       }
     }
   }
+  dependsOn:[
+    eventViewerAppServiceDeploy
+  ]
 }
 
 output eventGridViewerSubscriptionEndpoint string ='https://${eventViewerAppService.properties.defaultHostName}/api/updates' 
