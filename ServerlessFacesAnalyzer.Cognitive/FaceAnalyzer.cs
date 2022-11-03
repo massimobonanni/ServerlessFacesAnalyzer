@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
+using System.Diagnostics;
 
 namespace ServerlessFacesAnalyzer.Cognitive
 {
@@ -61,14 +62,18 @@ namespace ServerlessFacesAnalyzer.Cognitive
             };
         }
 
-        private FaceAnalyzerResult AnalyzeVisionResult(ImageAnalysis imageAnalysis, Configuration config)
+        private FaceAnalyzerResult AnalyzeVisionResult(ImageAnalysis imageAnalysis, long elapsedMilliseconds, Configuration config)
         {
-            var result = new FaceAnalyzerResult();
+            var result = new FaceAnalyzerResult()
+            {
+                ElapsedTimeInMilliseconds = elapsedMilliseconds
+            };
 
             foreach (var face in imageAnalysis.Faces)
             {
                 result.Faces.Add(face.ToFaceInfo());
             }
+
             return result;
         }
 
@@ -80,10 +85,11 @@ namespace ServerlessFacesAnalyzer.Cognitive
             try
             {
                 var visionClient = CreateVisionClient(config);
+                var stopWatch = Stopwatch.StartNew();
                 var visionResponse = await visionClient.AnalyzeImageInStreamAsync(imageStream,
                     config.Features, config.Details, cancellationToken: cancellationToken);
-
-                return AnalyzeVisionResult(visionResponse, config);
+                stopWatch.Stop();
+                return AnalyzeVisionResult(visionResponse, stopWatch.ElapsedMilliseconds, config);
             }
             catch (Exception ex)
             {
@@ -99,10 +105,11 @@ namespace ServerlessFacesAnalyzer.Cognitive
             try
             {
                 var visionClient = CreateVisionClient(config);
+                var stopWatch = Stopwatch.StartNew();
                 var visionResponse = await visionClient.AnalyzeImageAsync(imageUrl,
                     config.Features, config.Details, cancellationToken: cancellationToken);
-
-                return AnalyzeVisionResult(visionResponse, config);
+                stopWatch.Stop();
+                return AnalyzeVisionResult(visionResponse, stopWatch.ElapsedMilliseconds, config);
             }
             catch (Exception ex)
             {

@@ -13,8 +13,6 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models
         {
             return new FaceInfo()
             {
-                Age = source.Age,
-                Gender = source.Gender?.ToString(),
                 Rectangle = source.ToFaceRectangle()
             };
         }
