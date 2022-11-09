@@ -13,5 +13,13 @@ namespace ServerlessFacesAnalyzer.Functions.Responses
         public string OriginalFileName { get; set; }
         public string FileName { get; set; }
         public FaceAnalyzerResult AnalysisResult { get; set; }
+
+        public List<FaceBlob> FaceBlobs { get; set; }
+    }
+
+    public class FaceBlob
+    {
+        public string FaceId { get; set; }
+        public string BlobUrl { get; set; }
     }
 }

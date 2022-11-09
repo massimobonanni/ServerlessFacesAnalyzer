@@ -13,6 +13,7 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models
         {
             return new FaceInfo()
             {
+                Id = Guid.NewGuid().ToString(),
                 Rectangle = source.ToFaceRectangle()
             };
         }

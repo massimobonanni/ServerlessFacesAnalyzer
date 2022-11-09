@@ -8,6 +8,7 @@ namespace ServerlessFacesAnalyzer.Core.Models
 {
     public class FaceInfo
     {
+        public string Id { get; set; }
         public FaceRectangle Rectangle { get; set; }
     }
 }

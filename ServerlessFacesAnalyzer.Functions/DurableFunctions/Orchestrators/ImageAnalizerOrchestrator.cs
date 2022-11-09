@@ -52,10 +52,10 @@ namespace ServerlessFacesAnalyzer.Functions.DurableFunctions.Orchestrators
 
             if (faceresult.Faces.Any())
             {
-                var tasks = new Task[faceresult.Faces.Count];
+                var tasks = new Task<FaceBlob>[faceresult.Faces.Count];
                 for (int i = 0; i < faceresult.Faces.Count; i++)
                 {
-                    tasks[i] = context.CallActivityAsync(nameof(ExtractFaceFromImageActivity),
+                    tasks[i] = context.CallActivityAsync<FaceBlob>(nameof(ExtractFaceFromImageActivity),
                         new ExtractFaceFromImageDto()
                         {
                             OperationContext = operationContext,
@@ -65,6 +65,8 @@ namespace ServerlessFacesAnalyzer.Functions.DurableFunctions.Orchestrators
                 }
 
                 await Task.WhenAll(tasks);
+
+                response.FaceBlobs = tasks.Select(t => t.Result).ToList();
             }
 
             await context.CallActivityAsync(nameof(SendNotificationToEventGridActivity),

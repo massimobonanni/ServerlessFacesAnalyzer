@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using ServerlessFacesAnalyzer.Functions.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,14 @@ namespace Microsoft.Azure.Storage.Blob
 
             var resultBlob = destinationContainer.GetBlockBlobReference(blobName);
             await resultBlob.UploadTextAsync(JsonConvert.SerializeObject(obj, Formatting.Indented), cancellationToken);
+        }
+    }
+
+    public static class CloudBlockBlobExtensions
+    {
+        public static string GetSasUrl(this CloudBlockBlob blob, SharedAccessBlobPolicy policy)
+        {
+            return $"{blob.Uri}{blob.GetSharedAccessSignature(policy)}"; 
         }
     }
 }

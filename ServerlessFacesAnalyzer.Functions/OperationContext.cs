@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using ServerlessFacesAnalyzer.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -34,7 +35,7 @@ namespace ServerlessFacesAnalyzer.Functions
         }
 
         public string GenerateResultFileName() => $"{BlobFolder}\\result.json";
-        public string GenerateFaceFileName(int fileIndex) => $"{BlobFolder}\\face{fileIndex + 1}{Extension}";
+        public string GenerateFaceFileName(int fileIndex,FaceInfo face) => $"{BlobFolder}\\face-{face.Id}{Extension}";
 
     }
 }

@@ -21,6 +21,7 @@ using ServerlessFacesAnalyzer.Functions.Requestes;
 using Microsoft.Azure.WebJobs.Extensions.EventGrid;
 using Azure.Messaging.EventGrid;
 using static System.Net.WebRequestMethods;
+using System.Collections.Generic;
 
 namespace ServerlessFacesAnalyzer.Functions.Functions
 {
@@ -61,7 +62,7 @@ namespace ServerlessFacesAnalyzer.Functions.Functions
 
             // Upload original image on storage account
             await file.UploadToStorageAsync(operationContext.BlobName, destinationContainer);
-            
+
             // Analyze image
             var faceresult = await file.AnalyzeAsync(faceAnalyzer);
 
@@ -82,7 +83,7 @@ namespace ServerlessFacesAnalyzer.Functions.Functions
 
 
         private async Task<AnalyzeFaceFromStreamResponse> CreateResponseAsync(OperationContext operationContext,
-            FaceAnalyzerResult faceresult, CloudBlobContainer destinationContainer,IFormFile file)
+            FaceAnalyzerResult faceresult, CloudBlobContainer destinationContainer, IFormFile file)
         {
             //Create response DTO
             var response = new AnalyzeFaceFromStreamResponse()
@@ -90,17 +91,25 @@ namespace ServerlessFacesAnalyzer.Functions.Functions
                 OperationId = operationContext.OperationId,
                 OriginalFileName = operationContext.OriginalFileName,
                 FileName = operationContext.BlobName,
-                AnalysisResult = faceresult
+                AnalysisResult = faceresult,
+                FaceBlobs = new List<FaceBlob>()
             };
 
             var resultBlobName = operationContext.GenerateResultFileName();
             await destinationContainer.SerializeObjectToBlobAsync(resultBlobName, response);
 
+            var accessPolicy = new SharedAccessBlobPolicy()
+            {
+                SharedAccessStartTime = DateTime.UtcNow,
+                SharedAccessExpiryTime = DateTime.UtcNow.AddDays(1),
+                Permissions = SharedAccessBlobPermissions.Read
+            };
+
             // Elaborate faces
             for (int i = 0; i < faceresult.Faces.Count; i++)
             {
                 var face = faceresult.Faces[i];
-                var faceBlobName = operationContext.GenerateFaceFileName(i);
+                var faceBlobName = operationContext.GenerateFaceFileName(i, face);
                 var faceBlob = destinationContainer.GetBlockBlobReference(faceBlobName);
                 using (var sourceStream = file.OpenReadStream())
                 using (var faceBlobStream = faceBlob.OpenWrite())
@@ -108,6 +117,11 @@ namespace ServerlessFacesAnalyzer.Functions.Functions
                     // Extract face from original image
                     await imageProcessor.CropImageAsync(sourceStream, face.Rectangle, faceBlobStream);
                 }
+                
+                response.FaceBlobs.Add(new FaceBlob() { 
+                     BlobUrl= faceBlob.GetSasUrl(accessPolicy),
+                     FaceId=face.Id
+                });
             }
 
             return response;
