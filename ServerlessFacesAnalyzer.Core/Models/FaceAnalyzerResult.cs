@@ -10,6 +10,8 @@ namespace ServerlessFacesAnalyzer.Core.Models
     {
         public long ElapsedTimeInMilliseconds { get; set; }
 
+        public int NumberOfFaces => Faces.Count;
+
         public List<FaceInfo> Faces { get; set; }=new List<FaceInfo>();
     }
 }
