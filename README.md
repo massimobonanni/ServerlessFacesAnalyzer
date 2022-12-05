@@ -45,7 +45,6 @@ This is the `setting.json` file for the configuration:
     "DestinationContainer": "faces",
     "FaceAnalyzer:ServiceEndpoint": "",
     "FaceAnalyzer:ServiceKey": "",
-    "FaceAnalyzer:AgeThreshold": "18",
     "TopicEndpoint": "",
     "TopicKey": ""
   }
@@ -61,8 +60,6 @@ This is the `setting.json` file for the configuration:
 * `FaceAnalyzer:ServiceKey` : This is one of the access keys of the Cognitive Service resource you use to analyze the source image. This value must be a reference to a secret in the KeyVault. You can find this value in the Cognitive Service resource blade in the Azure Portal as shown in the following figure:
 
 ![](Documentation/Images/CognitiveServiceKeyPortal.png)
-
-* `FaceAnalyzer:AgeThreshold` : This is the age threshold used by the solution to filter the faces in the source image. The solution extract only the faces that have an age greater or equal to the threshold you set in the configuration. If you set the value 0, all the faces will be extracted.
 
 * `TopicEndpoint` : This is the endpoint of the custom topic that the solution uses to emits event for the external services. This value must be a reference to a secret in the KeyVault. You can find this value in the Event Grid Topic resource blade in the Azure Portal as shown in the following figure:
 

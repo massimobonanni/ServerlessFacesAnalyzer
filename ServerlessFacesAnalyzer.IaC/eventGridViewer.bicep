@@ -51,6 +51,7 @@ resource eventViewerAppService 'Microsoft.Web/sites@2022-03-01' = {
     siteConfig: {
       ftpsState: 'FtpsOnly'
       minTlsVersion: '1.2'
+      netFrameworkVersion:'v6.0'
     }
     httpsOnly: true
   }
