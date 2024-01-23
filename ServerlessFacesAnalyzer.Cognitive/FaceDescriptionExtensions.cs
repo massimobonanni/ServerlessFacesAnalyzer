@@ -1,15 +1,10 @@
 ﻿using ServerlessFacesAnalyzer.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models
+namespace Azure.AI.Vision.ImageAnalysis
 {
     public static class FaceDescriptionExtensions
     {
-        public static FaceInfo ToFaceInfo(this FaceDescription source)
+        public static FaceInfo ToFaceInfo(this DetectedPerson source)
         {
             return new FaceInfo()
             {
@@ -18,14 +13,14 @@ namespace Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models
             };
         }
 
-        public static ServerlessFacesAnalyzer.Core.Models.FaceRectangle ToFaceRectangle(this FaceDescription source)
+        public static ServerlessFacesAnalyzer.Core.Models.FaceRectangle ToFaceRectangle(this DetectedPerson source)
         {
             return new ServerlessFacesAnalyzer.Core.Models.FaceRectangle()
             {
-                Left = source.FaceRectangle.Left,
-                Top = source.FaceRectangle.Top,
-                Width = source.FaceRectangle.Width,
-                Height = source.FaceRectangle.Height
+                Left = source.BoundingBox.X,
+                Top = source.BoundingBox.Y,
+                Width = source.BoundingBox.Width,
+                Height = source.BoundingBox.Height
             };
         }
     }
