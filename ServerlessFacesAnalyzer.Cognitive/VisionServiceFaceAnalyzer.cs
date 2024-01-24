@@ -10,11 +10,11 @@ using System.IO;
 
 namespace ServerlessFacesAnalyzer.Cognitive
 {
-    public class FaceAnalyzer : IFaceAnalyzer
+    public class VisionServiceFaceAnalyzer : IFaceAnalyzer
     {
         public class Configuration
         {
-            const string ConfigRootName = "FaceAnalyzer";
+            const string ConfigRootName = "VisionServiceFaceAnalyzer";
             public string ServiceEndpoint { get; set; }
             public string ServiceKey { get; set; }
 
@@ -35,9 +35,9 @@ namespace ServerlessFacesAnalyzer.Cognitive
         }
 
         private readonly IConfiguration configuration;
-        private readonly ILogger<FaceAnalyzer> logger;
+        private readonly ILogger<VisionServiceFaceAnalyzer> logger;
 
-        public FaceAnalyzer(IConfiguration configuration, ILoggerFactory loggerFactory)
+        public VisionServiceFaceAnalyzer(IConfiguration configuration, ILoggerFactory loggerFactory)
         {
             if (configuration == null)
                 throw new ArgumentNullException(nameof(configuration));
@@ -45,7 +45,7 @@ namespace ServerlessFacesAnalyzer.Cognitive
                 throw new ArgumentNullException(nameof(loggerFactory));
 
             this.configuration = configuration;
-            this.logger = loggerFactory.CreateLogger<FaceAnalyzer>();
+            this.logger = loggerFactory.CreateLogger<VisionServiceFaceAnalyzer>();
         }
 
         private ImageAnalysisClient CreateImageAnalysisClient(Configuration config)
