@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Azure.AI.Vision.Common" Version="0.15.1-beta.1" />
     <PackageReference Include="Azure.AI.Vision.ImageAnalysis" Version="1.0.0-beta.1" />
+    <PackageReference Include="Microsoft.Azure.CognitiveServices.Vision.Face" Version="2.8.0-preview.3" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
