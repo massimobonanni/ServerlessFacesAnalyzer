@@ -1,6 +1,7 @@
 ﻿using Azure;
 using Azure.AI.Vision.ImageAnalysis;
 using Microsoft.Azure.CognitiveServices.Vision.Face;
+using Microsoft.Azure.CognitiveServices.Vision.Face.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ServerlessFacesAnalyzer.Core.Interfaces;
@@ -23,16 +24,11 @@ namespace ServerlessFacesAnalyzer.Cognitive
             public string ServiceEndpoint { get; set; }
             public string ServiceKey { get; set; }
 
-            public int ConfidenceThreshold { get; set; } = 80;
-
             public static Configuration Load(IConfiguration config)
             {
                 var retVal = new Configuration();
                 retVal.ServiceEndpoint = config[$"{ConfigRootName}:ServiceEndpoint"];
                 retVal.ServiceKey = config[$"{ConfigRootName}:ServiceKey"];
-                if (config[$"{ConfigRootName}:ConfidenceThreshold"] != null)
-                    if (int.TryParse(config[$"{ConfigRootName}:ConfidenceThreshold"], out var threshold))
-                        retVal.ConfidenceThreshold = threshold;
                 return retVal;
             }
         }
@@ -68,9 +64,26 @@ namespace ServerlessFacesAnalyzer.Cognitive
                 var faceClient = CreateFaceClient(config);
                 var stopWatch = Stopwatch.StartNew();
                 var response = await faceClient.Face.DetectWithStreamAsync(imageStream, returnFaceId: false);
-                
                 stopWatch.Stop();
-                return AnalyzeVisionResult(visionResponse, stopWatch.ElapsedMilliseconds, config);
+                return AnalyzeFaceResult(response, stopWatch.ElapsedMilliseconds, config);
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, "Error during face analysis");
+                throw;
+            }
+        }
+        public async Task<FaceAnalyzerResult> AnalyzeAsync(string imageUrl, CancellationToken cancellationToken = default)
+        {
+            var config = Configuration.Load(configuration);
+
+            try
+            {
+                var faceClient = CreateFaceClient(config);
+                var stopWatch = Stopwatch.StartNew();
+                var response = await faceClient.Face.DetectWithUrlAsync(imageUrl, returnFaceId: false);
+                stopWatch.Stop();
+                return AnalyzeFaceResult(response, stopWatch.ElapsedMilliseconds, config);
             }
             catch (Exception ex)
             {
@@ -79,9 +92,23 @@ namespace ServerlessFacesAnalyzer.Cognitive
             }
         }
 
-        public Task<FaceAnalyzerResult> AnalyzeAsync(string imageUrl, CancellationToken cancellationToken = default)
+        private FaceAnalyzerResult AnalyzeFaceResult(IList<DetectedFace> response, long elapsedMilliseconds, Configuration config)
         {
-            throw new NotImplementedException();
+            var result = new FaceAnalyzerResult()
+            {
+                ElapsedTimeInMilliseconds = elapsedMilliseconds,
+            };
+
+            if (response != null && response.Any())
+            {
+                foreach (var face in response)
+                {
+                    result.Faces.Add(face.ToFaceInfo());
+                }
+            }
+            return result;
         }
+
+
     }
 }
