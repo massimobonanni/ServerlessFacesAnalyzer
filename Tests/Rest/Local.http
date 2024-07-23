@@ -1,0 +1,13 @@
+@hostname=localhost
+@port=7094
+
+POST http://{{hostname}}:{{port}}/api/analyze http/1.1
+Content-Type: multipart/form-data;boundary="boundary"
+
+--boundary
+Content-Disposition: form-data; name="image"; filename="image.jpg"
+Content-Type: image/jpeg
+
+< ./images/Woman-with-Children.jpg
+
+--boundary--
