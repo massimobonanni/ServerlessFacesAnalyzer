@@ -136,8 +136,15 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   }
 }
 
+resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2021-04-01'= {
+  name: 'default'
+  parent: storageAccount
+  properties: {}
+}
+
 resource containers 'Microsoft.Storage/storageAccounts/blobServices/containers@2019-06-01' = {
-  name: '${storageAccount.name}/default/faces'
+  name: 'faces'
+  parent: blobService
   properties: {
     publicAccess: 'None'
     metadata: {}
@@ -250,10 +257,14 @@ resource appSettings 'Microsoft.Web/sites/config@2022-03-01' = {
     FUNCTIONS_EXTENSION_VERSION: '~4'
     WEBSITE_NODE_DEFAULT_VERSION: '~10'
     FUNCTIONS_WORKER_RUNTIME: 'dotnet'
+    FaceAnalyzerImplementation:'Vision'
     StorageConnectionString: '@Microsoft.KeyVault(SecretUri=${storageConnectionStringSecret.properties.secretUri})'
     DestinationContainer: 'faces'
-    'FaceAnalyzer:ServiceEndpoint': '@Microsoft.KeyVault(SecretUri=${cognitiveServiceEndpointSecret.properties.secretUri})'
-    'FaceAnalyzer:ServiceKey': '@Microsoft.KeyVault(SecretUri=${cognitiveServiceApiKeySecret.properties.secretUri})'
+    'VisionServiceFaceAnalyzer:ServiceEndpoint':'@Microsoft.KeyVault(SecretUri=${cognitiveServiceEndpointSecret.properties.secretUri})'
+    'VisionServiceFaceAnalyzer:ServiceKey':'@Microsoft.KeyVault(SecretUri=${cognitiveServiceApiKeySecret.properties.secretUri})'
+    'VisionServiceFaceAnalyzer:ConfidenceThreshold':'70'
+    'FaceServiceFaceAnalyzer:ServiceEndpoint':'@Microsoft.KeyVault(SecretUri=${cognitiveServiceEndpointSecret.properties.secretUri})'
+    'FaceServiceFaceAnalyzer:ServiceKey':'@Microsoft.KeyVault(SecretUri=${cognitiveServiceApiKeySecret.properties.secretUri})'
     TopicEndpoint: '@Microsoft.KeyVault(SecretUri=${eventGridTopicEndpointSecret.properties.secretUri})'
     TopicKey: '@Microsoft.KeyVault(SecretUri=${eventGridTopicKeySecret.properties.secretUri})'
   }
