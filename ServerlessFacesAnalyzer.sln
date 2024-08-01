@@ -11,6 +11,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerlessFacesAnalyzer.Cog
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerlessFacesAnalyzer.ImageProcessing", "ServerlessFacesAnalyzer.ImageProcessing\ServerlessFacesAnalyzer.ImageProcessing.csproj", "{925FF01E-CE6F-4406-9659-6139FEA48C64}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5DA1408D-53B5-435F-A2CE-8E5FD4A8483F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rest", "Rest", "{810A5131-2E6E-4EC2-BBE0-E6BECCCE50A0}"
+	ProjectSection(SolutionItems) = preProject
+		Tests\Rest\Local.http = Tests\Rest\Local.http
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +43,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{810A5131-2E6E-4EC2-BBE0-E6BECCCE50A0} = {5DA1408D-53B5-435F-A2CE-8E5FD4A8483F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CAA1EFC1-15CD-4756-B626-CE070A7DEE7A}

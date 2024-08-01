@@ -2,48 +2,42 @@
 using Microsoft.Extensions.Logging;
 using ServerlessFacesAnalyzer.Core.Interfaces;
 using ServerlessFacesAnalyzer.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
-using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
 using System.Diagnostics;
+using Azure;
+using Azure.AI.Vision.Common;
+using Azure.AI.Vision.ImageAnalysis;
+using System.IO;
 
 namespace ServerlessFacesAnalyzer.Cognitive
 {
-    public class FaceAnalyzer : IFaceAnalyzer
+    public class VisionServiceFaceAnalyzer : IFaceAnalyzer
     {
         public class Configuration
         {
-            const string ConfigRootName = "FaceAnalyzer";
+            const string ConfigRootName = "VisionServiceFaceAnalyzer";
             public string ServiceEndpoint { get; set; }
             public string ServiceKey { get; set; }
 
-            public List<VisualFeatureTypes?> Features = new List<VisualFeatureTypes?>()
-            {
-                VisualFeatureTypes.Faces
-            };
+            public int ConfidenceThreshold { get; set; } = 80;
 
-            public List<Details?> Details = new List<Details?>()
-            {
-                Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models.Details.Landmarks
-            };
+            public VisualFeatures Features = VisualFeatures.People;
 
             public static Configuration Load(IConfiguration config)
             {
                 var retVal = new Configuration();
                 retVal.ServiceEndpoint = config[$"{ConfigRootName}:ServiceEndpoint"];
                 retVal.ServiceKey = config[$"{ConfigRootName}:ServiceKey"];
+                if (config[$"{ConfigRootName}:ConfidenceThreshold"] != null)
+                    if (int.TryParse(config[$"{ConfigRootName}:ConfidenceThreshold"], out var threshold))
+                        retVal.ConfidenceThreshold = threshold;
                 return retVal;
             }
         }
 
         private readonly IConfiguration configuration;
-        private readonly ILogger<FaceAnalyzer> logger;
+        private readonly ILogger<VisionServiceFaceAnalyzer> logger;
 
-        public FaceAnalyzer(IConfiguration configuration, ILoggerFactory loggerFactory)
+        public VisionServiceFaceAnalyzer(IConfiguration configuration, ILoggerFactory loggerFactory)
         {
             if (configuration == null)
                 throw new ArgumentNullException(nameof(configuration));
@@ -51,30 +45,30 @@ namespace ServerlessFacesAnalyzer.Cognitive
                 throw new ArgumentNullException(nameof(loggerFactory));
 
             this.configuration = configuration;
-            this.logger = loggerFactory.CreateLogger<FaceAnalyzer>();
+            this.logger = loggerFactory.CreateLogger<VisionServiceFaceAnalyzer>();
         }
 
-        private ComputerVisionClient CreateVisionClient(Configuration config)
+        private ImageAnalysisClient CreateImageAnalysisClient(Configuration config)
         {
-            ApiKeyServiceClientCredentials credentials = new ApiKeyServiceClientCredentials(config.ServiceKey);
-            return new ComputerVisionClient(credentials)
-            {
-                Endpoint = config.ServiceEndpoint
-            };
+            var credentials = new AzureKeyCredential(config.ServiceKey);
+            return new ImageAnalysisClient(new Uri(config.ServiceEndpoint), credentials);
         }
 
-        private FaceAnalyzerResult AnalyzeVisionResult(ImageAnalysis imageAnalysis, long elapsedMilliseconds, Configuration config)
+        private FaceAnalyzerResult AnalyzeVisionResult(Response<ImageAnalysisResult> imageAnalysis, long elapsedMilliseconds, Configuration config)
         {
             var result = new FaceAnalyzerResult()
             {
-                ElapsedTimeInMilliseconds = elapsedMilliseconds
+                ElapsedTimeInMilliseconds = elapsedMilliseconds,
             };
 
-            foreach (var face in imageAnalysis.Faces)
+            if (imageAnalysis.Value.People != null && imageAnalysis.Value.People.Values.Any())
             {
-                result.Faces.Add(face.ToFaceInfo());
+                foreach (var people in imageAnalysis.Value.People.Values)
+                {
+                    if (people.Confidence * 100 >= config.ConfidenceThreshold)
+                        result.Faces.Add(people.ToFaceInfo());
+                }
             }
-
             return result;
         }
 
@@ -85,10 +79,10 @@ namespace ServerlessFacesAnalyzer.Cognitive
 
             try
             {
-                var visionClient = CreateVisionClient(config);
+                var imageClient = CreateImageAnalysisClient(config);
                 var stopWatch = Stopwatch.StartNew();
-                var visionResponse = await visionClient.AnalyzeImageInStreamAsync(imageStream,
-                    config.Features, config.Details, cancellationToken: cancellationToken);
+                var visionResponse = await imageClient.AnalyzeAsync(BinaryData.FromStream(imageStream),
+                    config.Features, cancellationToken: cancellationToken);
                 stopWatch.Stop();
                 return AnalyzeVisionResult(visionResponse, stopWatch.ElapsedMilliseconds, config);
             }
@@ -105,10 +99,10 @@ namespace ServerlessFacesAnalyzer.Cognitive
 
             try
             {
-                var visionClient = CreateVisionClient(config);
+                var imageClient = CreateImageAnalysisClient(config);
                 var stopWatch = Stopwatch.StartNew();
-                var visionResponse = await visionClient.AnalyzeImageAsync(imageUrl,
-                    config.Features, config.Details, cancellationToken: cancellationToken);
+                var visionResponse = await imageClient.AnalyzeAsync(new Uri(imageUrl),
+                    config.Features, cancellationToken: cancellationToken);
                 stopWatch.Stop();
                 return AnalyzeVisionResult(visionResponse, stopWatch.ElapsedMilliseconds, config);
             }

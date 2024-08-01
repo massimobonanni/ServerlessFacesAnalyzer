@@ -18,7 +18,10 @@ namespace ServerlessFacesAnalyzer.Functions
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            builder.Services.AddScoped<IFaceAnalyzer, FaceAnalyzer>();
+            // Vision Service 4.0
+            builder.Services.AddScoped<IFaceAnalyzer, VisionServiceFaceAnalyzer>();
+            // Face Service
+            //builder.Services.AddScoped<IFaceAnalyzer, FaceServiceFaceAnalyzer>();
             builder.Services.AddScoped<IImageProcessor, ImageProcessor>();
         }
     }
