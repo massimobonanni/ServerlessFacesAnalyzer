@@ -2,16 +2,16 @@ name: CI/CD on IaC
 
 on:
   workflow_dispatch:
-  push:
-    branches: 
-      - "main"
-    paths:
-      - "ServerlessFacesAnalyzer.IaC/**"
-  pull_request:
-    branches: 
-      - "main"
-    paths:
-      - "ServerlessFacesAnalyzer.IaC/**"
+#  push:
+#    branches: 
+#      - "main"
+#    paths:
+#      - "ServerlessFacesAnalyzer.IaC/**"
+#  pull_request:
+#    branches: 
+#      - "main"
+#    paths:
+#      - "ServerlessFacesAnalyzer.IaC/**"
       
 env: 
   BICEP_PROJECT_PATH: '${{ github.workspace }}/ServerlessFacesAnalyzer.IaC'
