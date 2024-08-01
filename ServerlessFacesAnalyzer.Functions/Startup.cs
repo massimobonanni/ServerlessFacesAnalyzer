@@ -1,4 +1,5 @@
 ﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ServerlessFacesAnalyzer.Cognitive;
 using ServerlessFacesAnalyzer.Core.Interfaces;
@@ -14,14 +15,34 @@ using System.Threading.Tasks;
 
 namespace ServerlessFacesAnalyzer.Functions
 {
-    public class Startup: FunctionsStartup
+    public class Startup : FunctionsStartup
     {
+        public IConfiguration Config { get; private set; }
+
+        public override void ConfigureAppConfiguration(IFunctionsConfigurationBuilder builder)
+        {
+            base.ConfigureAppConfiguration(builder);
+            Config = builder.ConfigurationBuilder.AddEnvironmentVariables().Build();
+
+        }
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            // Vision Service 4.0
-            builder.Services.AddScoped<IFaceAnalyzer, VisionServiceFaceAnalyzer>();
-            // Face Service
-            //builder.Services.AddScoped<IFaceAnalyzer, FaceServiceFaceAnalyzer>();
+            var faceAnalyzerImplementation = Config.GetValue<string>("FaceAnalyzerImplementation");
+            if (string.IsNullOrWhiteSpace(faceAnalyzerImplementation))
+                faceAnalyzerImplementation = "vision";
+    
+            switch (faceAnalyzerImplementation.ToLower())
+            {
+                case "face":
+                    // Face Service
+                    builder.Services.AddScoped<IFaceAnalyzer, FaceServiceFaceAnalyzer>();
+                    break;
+                case "vision":
+                default:
+                    // Vision Service 4.0
+                    builder.Services.AddScoped<IFaceAnalyzer, VisionServiceFaceAnalyzer>();
+                    break;
+            }
             builder.Services.AddScoped<IImageProcessor, ImageProcessor>();
         }
     }
