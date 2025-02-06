@@ -15,8 +15,8 @@ namespace ServerlessFacesAnalyzer.Cognitive
         public class Configuration
         {
             const string ConfigRootName = "VisionServiceFaceAnalyzer";
-            public string ServiceEndpoint { get; set; }
-            public string ServiceKey { get; set; }
+            public required string ServiceEndpoint { get; set; }
+            public required string ServiceKey { get; set; }
 
             public int ConfidenceThreshold { get; set; } = 80;
 
@@ -24,12 +24,18 @@ namespace ServerlessFacesAnalyzer.Cognitive
 
             public static Configuration Load(IConfiguration config)
             {
-                var retVal = new Configuration();
-                retVal.ServiceEndpoint = config[$"{ConfigRootName}:ServiceEndpoint"];
-                retVal.ServiceKey = config[$"{ConfigRootName}:ServiceKey"];
+                var serviceEndpoint = config[$"{ConfigRootName}:ServiceEndpoint"];
+                var serviceKey = config[$"{ConfigRootName}:ServiceKey"];
+                var retVal = new Configuration()
+                {
+                    ServiceEndpoint = serviceEndpoint,
+                    ServiceKey = serviceKey
+                };
+                
                 if (config[$"{ConfigRootName}:ConfidenceThreshold"] != null)
                     if (int.TryParse(config[$"{ConfigRootName}:ConfidenceThreshold"], out var threshold))
                         retVal.ConfidenceThreshold = threshold;
+
                 return retVal;
             }
         }
