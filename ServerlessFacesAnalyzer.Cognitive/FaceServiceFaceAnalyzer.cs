@@ -1,18 +1,11 @@
-﻿using Azure;
-using Azure.AI.Vision.ImageAnalysis;
+﻿using Azure.AI.Vision.ImageAnalysis;
 using Microsoft.Azure.CognitiveServices.Vision.Face;
 using Microsoft.Azure.CognitiveServices.Vision.Face.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ServerlessFacesAnalyzer.Core.Interfaces;
 using ServerlessFacesAnalyzer.Core.Models;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ServerlessFacesAnalyzer.Cognitive
 {
@@ -21,15 +14,18 @@ namespace ServerlessFacesAnalyzer.Cognitive
         public class Configuration
         {
             const string ConfigRootName = "FaceServiceFaceAnalyzer";
-            public string ServiceEndpoint { get; set; }
-            public string ServiceKey { get; set; }
+            public required string ServiceEndpoint { get; set; }
+            public required string ServiceKey { get; set; }
 
             public static Configuration Load(IConfiguration config)
             {
-                var retVal = new Configuration();
-                retVal.ServiceEndpoint = config[$"{ConfigRootName}:ServiceEndpoint"];
-                retVal.ServiceKey = config[$"{ConfigRootName}:ServiceKey"];
-                return retVal;
+                var serviceEndpoint = config[$"{ConfigRootName}:ServiceEndpoint"];
+                var serviceKey = config[$"{ConfigRootName}:ServiceKey"];
+                return new Configuration()
+                {
+                    ServiceEndpoint = serviceEndpoint,
+                    ServiceKey = serviceKey
+                };
             }
         }
 
