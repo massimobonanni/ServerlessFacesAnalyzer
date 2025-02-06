@@ -21,10 +21,14 @@ namespace ServerlessFacesAnalyzer.Cognitive
             {
                 var serviceEndpoint = config[$"{ConfigRootName}:ServiceEndpoint"];
                 var serviceKey = config[$"{ConfigRootName}:ServiceKey"];
+                if (serviceEndpoint == null || serviceKey == null)
+                {
+                    throw new InvalidOperationException("ServiceEndpoint and ServiceKey must be provided in the configuration.");
+                }
                 return new Configuration()
                 {
-                    ServiceEndpoint = serviceEndpoint,
-                    ServiceKey = serviceKey
+                    ServiceEndpoint = serviceEndpoint ,
+                    ServiceKey = serviceKey 
                 };
             }
         }

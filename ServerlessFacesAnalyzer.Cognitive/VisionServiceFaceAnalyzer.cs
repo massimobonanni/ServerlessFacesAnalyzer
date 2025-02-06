@@ -26,12 +26,16 @@ namespace ServerlessFacesAnalyzer.Cognitive
             {
                 var serviceEndpoint = config[$"{ConfigRootName}:ServiceEndpoint"];
                 var serviceKey = config[$"{ConfigRootName}:ServiceKey"];
+                if (serviceEndpoint == null || serviceKey == null)
+                {
+                    throw new InvalidOperationException("ServiceEndpoint and ServiceKey must be provided in the configuration.");
+                }
                 var retVal = new Configuration()
                 {
                     ServiceEndpoint = serviceEndpoint,
                     ServiceKey = serviceKey
                 };
-                
+
                 if (config[$"{ConfigRootName}:ConfidenceThreshold"] != null)
                     if (int.TryParse(config[$"{ConfigRootName}:ConfidenceThreshold"], out var threshold))
                         retVal.ConfidenceThreshold = threshold;
