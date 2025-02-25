@@ -1,58 +1,55 @@
-﻿using Microsoft.Azure.Storage.Blob;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
+﻿using Azure.Storage.Blobs;
+using Azure.Storage.Sas;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ServerlessFacesAnalyzer.Core.Interfaces;
-using ServerlessFacesAnalyzer.Core.Models;
 using ServerlessFacesAnalyzer.Functions.DurableFunctions.Dtos;
 using ServerlessFacesAnalyzer.Functions.Responses;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ServerlessFacesAnalyzer.Functions.DurableFunctions.Activities
 {
     public class ExtractFaceFromImageActivity
     {
         private readonly ILogger<ExtractFaceFromImageActivity> logger;
+        private readonly BlobServiceClient storageServiceClient;
         private readonly IImageProcessor imageProcessor;
+        private readonly IConfiguration configuration;
 
         public ExtractFaceFromImageActivity(IImageProcessor imageProcessor,
-           ILogger<ExtractFaceFromImageActivity> log)
+            IConfiguration configuration,
+            IAzureClientFactory<BlobServiceClient> blobClientFactory,
+            ILogger<ExtractFaceFromImageActivity> log)
         {
             logger = log;
             this.imageProcessor = imageProcessor;
+            this.configuration = configuration;
+            this.storageServiceClient = blobClientFactory.CreateClient(Constants.BlobClientName);
         }
 
-        [FunctionName(nameof(ExtractFaceFromImageActivity))]
-        public async Task<FaceBlob> Run([ActivityTrigger] ExtractFaceFromImageDto context,
-            [Blob("%DestinationContainer%", FileAccess.ReadWrite, Connection = "StorageConnectionString")] CloudBlobContainer containerClient)
+        [Function(nameof(ExtractFaceFromImageActivity))]
+        public async Task<FaceBlob> Run([ActivityTrigger] ExtractFaceFromImageDto context)
         {
             var faceBlobName = context.OperationContext.GenerateFaceFileName(context.FaceIndex, context.Face);
-            var imageBlob = containerClient.GetBlockBlobReference(context.OperationContext.BlobName);
-            var faceBlob = containerClient.GetBlockBlobReference(faceBlobName);
 
-            using (var sourceStream = imageBlob.OpenRead())
-            using (var faceStream = faceBlob.OpenWrite())
+            var destinationContainerName = configuration.GetValue<string>("DestinationContainer");
+            var blobContainerClient = storageServiceClient.GetBlobContainerClient(destinationContainerName);
+            var imageBlobClient = blobContainerClient.GetBlobClient(context.OperationContext.BlobName);
+            var faceBlobClient = blobContainerClient.GetBlobClient(faceBlobName);
+
+            using (var sourceStream = imageBlobClient.OpenRead())
+            using (var faceStream = faceBlobClient.OpenWrite(true))
             {
                 await imageProcessor.CropImageAsync(sourceStream, context.Face.Rectangle, faceStream);
             }
 
-            var accessPolicy = new SharedAccessBlobPolicy()
-            {
-                SharedAccessStartTime = DateTime.UtcNow,
-                SharedAccessExpiryTime = DateTime.UtcNow.AddDays(1),
-                Permissions = SharedAccessBlobPermissions.Read
-            };
+            var blobUri = faceBlobClient.GenerateSasUri(BlobSasPermissions.Read, DateTimeOffset.Now.AddDays(1));
 
             return new FaceBlob()
             {
                 FaceId = context.Face.Id,
-                BlobUrl = faceBlob.GetSasUrl(accessPolicy)
+                BlobUrl = blobUri.ToString()
             };
         }
     }

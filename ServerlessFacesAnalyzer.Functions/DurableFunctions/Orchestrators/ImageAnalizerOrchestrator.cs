@@ -1,11 +1,5 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Azure.WebJobs.Host;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.DurableTask;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ServerlessFacesAnalyzer.Core.Models;
@@ -27,9 +21,9 @@ namespace ServerlessFacesAnalyzer.Functions.DurableFunctions.Orchestrators
             this.configuration = configuration;
         }
 
-        [FunctionName(nameof(ImageAnalizerOrchestrator))]
+        [Function(nameof(ImageAnalizerOrchestrator))]
         public async Task<AnalyzeFaceFromStreamResponse> RunOrchestrator(
-            [OrchestrationTrigger] IDurableOrchestrationContext context)
+            [OrchestrationTrigger] TaskOrchestrationContext context)
         {
             var operationContext = context.GetInput<OperationContext>();
 

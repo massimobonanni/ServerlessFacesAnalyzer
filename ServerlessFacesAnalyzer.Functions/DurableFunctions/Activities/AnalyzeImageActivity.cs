@@ -1,39 +1,41 @@
-﻿using Microsoft.Azure.Storage.Blob;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
+﻿using Azure.Storage.Blobs;
+using Microsoft.ApplicationInsights.Extensibility.Implementation;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ServerlessFacesAnalyzer.Core.Interfaces;
 using ServerlessFacesAnalyzer.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ServerlessFacesAnalyzer.Functions.DurableFunctions.Activities
 {
     public class AnalyzeImageActivity
     {
         private readonly ILogger<AnalyzeImageActivity> logger;
+        private readonly BlobServiceClient storageServiceClient;
         private readonly IFaceAnalyzer faceAnalyzer;
+        private readonly IConfiguration configuration;
 
         public AnalyzeImageActivity(IFaceAnalyzer faceAnalyzer,
-           ILogger<AnalyzeImageActivity> log)
+            IConfiguration configuration,
+            IAzureClientFactory<BlobServiceClient> blobClientFactory,
+            ILogger<AnalyzeImageActivity> log)
         {
             logger = log;
+            this.configuration = configuration;
             this.faceAnalyzer = faceAnalyzer;
+            this.storageServiceClient = blobClientFactory.CreateClient(Constants.BlobClientName);
         }
 
-        [FunctionName(nameof(AnalyzeImageActivity))]
-        public async Task<FaceAnalyzerResult> Run([ActivityTrigger] OperationContext context,
-            [Blob("%DestinationContainer%", FileAccess.Read, Connection = "StorageConnectionString")] CloudBlobContainer containerClient)
+        [Function(nameof(AnalyzeImageActivity))]
+        public async Task<FaceAnalyzerResult> Run([ActivityTrigger] OperationContext context)
         {
-            var blobReference = containerClient.GetBlockBlobReference(context.BlobName);
+            var destinationContainerName = configuration.GetValue<string>("DestinationContainer");
+            var blobContainerClient = storageServiceClient.GetBlobContainerClient(destinationContainerName);
+            var blobClient = blobContainerClient.GetBlobClient(context.BlobName);
 
             FaceAnalyzerResult result;
-            using (var stream = await blobReference.OpenReadAsync())
+            using (var stream = await blobClient.OpenReadAsync())
             {
                 result = await this.faceAnalyzer.AnalyzeAsync(stream);
             }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Azure.Storage.Blob;
+﻿using Azure.Storage.Blobs;
 using ServerlessFacesAnalyzer.Core.Interfaces;
 using ServerlessFacesAnalyzer.Core.Models;
 
@@ -12,15 +6,15 @@ namespace Microsoft.AspNetCore.Http
 {
     public static class HttpExtensions
     {
-        public static async Task UploadToStorageAsync(this IFormFile file, 
+        public static async Task UploadToStorageAsync(this IFormFile file,
             string blobName,
-            CloudBlobContainer blobContainer,
-            CancellationToken token=default)
+            BlobContainerClient blobContainer,
+            CancellationToken token = default)
         {
-            var blob = blobContainer.GetBlockBlobReference(blobName);
+            var blob = blobContainer.GetBlobClient(blobName);
             using (var sourceStream = file.OpenReadStream())
             {
-                await blob.UploadFromStreamAsync(sourceStream, token);
+                await blob.UploadAsync(sourceStream, token);
             }
         }
 
