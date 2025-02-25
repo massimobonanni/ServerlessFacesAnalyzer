@@ -19,7 +19,7 @@ on:
 
 env: 
   FUNCTION_APP_NAME: "sfawtzhervz6fj6k-func"
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: '${{ github.workspace }}/ServerlessFacesAnalyzer.Functions'
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: '${{ github.workspace }}/ServerlessFacesAnalyzer.FuncApp'
   BUILD_OUTPUT_PATH: '${{ github.workspace }}/build-artifacts'
   BUILD_PACKAGE_NAME: 'az-func.zip'
   
