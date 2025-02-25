@@ -5,10 +5,10 @@ using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ServerlessFacesAnalyzer.Core.Interfaces;
-using ServerlessFacesAnalyzer.Functions.DurableFunctions.Dtos;
-using ServerlessFacesAnalyzer.Functions.Responses;
+using ServerlessFacesAnalyzer.FuncApp.DurableFunctions.Dtos;
+using ServerlessFacesAnalyzer.FuncApp.Responses;
 
-namespace ServerlessFacesAnalyzer.Functions.DurableFunctions.Activities
+namespace ServerlessFacesAnalyzer.FuncApp.DurableFunctions.Activities
 {
     public class ExtractFaceFromImageActivity
     {
@@ -25,7 +25,7 @@ namespace ServerlessFacesAnalyzer.Functions.DurableFunctions.Activities
             logger = log;
             this.imageProcessor = imageProcessor;
             this.configuration = configuration;
-            this.storageServiceClient = blobClientFactory.CreateClient(Constants.BlobClientName);
+            storageServiceClient = blobClientFactory.CreateClient(Constants.BlobClientName);
         }
 
         [Function(nameof(ExtractFaceFromImageActivity))]

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ServerlessFacesAnalyzer.Functions.Responses
+namespace ServerlessFacesAnalyzer.FuncApp.Responses
 {
     public class AnalyzeFaceFromStreamResponse
     {

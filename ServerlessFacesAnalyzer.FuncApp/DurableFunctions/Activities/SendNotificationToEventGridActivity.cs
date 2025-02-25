@@ -3,9 +3,9 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using ServerlessFacesAnalyzer.Functions.DurableFunctions.Dtos;
+using ServerlessFacesAnalyzer.FuncApp.DurableFunctions.Dtos;
 
-namespace ServerlessFacesAnalyzer.Functions.DurableFunctions.Activities
+namespace ServerlessFacesAnalyzer.FuncApp.DurableFunctions.Activities
 {
     public class SendNotificationToEventGridActivity
     {
@@ -16,7 +16,7 @@ namespace ServerlessFacesAnalyzer.Functions.DurableFunctions.Activities
             ILogger<SendNotificationToEventGridActivity> log)
         {
             logger = log;
-            this.eventClient = eventClientFactory.CreateClient(Constants.EventGridClientName);
+            eventClient = eventClientFactory.CreateClient(Constants.EventGridClientName);
         }
 
         [Function(nameof(SendNotificationToEventGridActivity))]
@@ -28,9 +28,9 @@ namespace ServerlessFacesAnalyzer.Functions.DurableFunctions.Activities
               dataVersion: "1.0",
               data: context.AnalysisResult);
 
-            await this.eventClient.SendEventAsync(@event);
+            await eventClient.SendEventAsync(@event);
 
-            logger.LogInformation("Event sended to custom topic", JsonConvert.SerializeObject(@event));
+            logger.LogInformation("Event sended to custom topic : {0}", JsonConvert.SerializeObject(@event));
         }
     }
 }

@@ -1,12 +1,12 @@
 ﻿using ServerlessFacesAnalyzer.Core.Models;
-using ServerlessFacesAnalyzer.Functions.Responses;
+using ServerlessFacesAnalyzer.FuncApp.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ServerlessFacesAnalyzer.Functions.DurableFunctions.Dtos
+namespace ServerlessFacesAnalyzer.FuncApp.DurableFunctions.Dtos
 {
     public class SaveFaceAnalysisResultDto
     {

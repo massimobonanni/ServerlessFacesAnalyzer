@@ -3,11 +3,11 @@ using Microsoft.DurableTask;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ServerlessFacesAnalyzer.Core.Models;
-using ServerlessFacesAnalyzer.Functions.DurableFunctions.Activities;
-using ServerlessFacesAnalyzer.Functions.DurableFunctions.Dtos;
-using ServerlessFacesAnalyzer.Functions.Responses;
+using ServerlessFacesAnalyzer.FuncApp.DurableFunctions.Activities;
+using ServerlessFacesAnalyzer.FuncApp.Responses;
+using ServerlessFacesAnalyzer.FuncApp.DurableFunctions.Dtos;
 
-namespace ServerlessFacesAnalyzer.Functions.DurableFunctions.Orchestrators
+namespace ServerlessFacesAnalyzer.FuncApp.DurableFunctions.Orchestrators
 {
     public class ImageAnalizerOrchestrator
     {

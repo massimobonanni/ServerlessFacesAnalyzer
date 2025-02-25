@@ -4,9 +4,9 @@ using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using ServerlessFacesAnalyzer.Functions.DurableFunctions.Dtos;
+using ServerlessFacesAnalyzer.FuncApp.DurableFunctions.Dtos;
 
-namespace ServerlessFacesAnalyzer.Functions.DurableFunctions.Activities
+namespace ServerlessFacesAnalyzer.FuncApp.DurableFunctions.Activities
 {
     public class SaveFaceAnalysisResultActivity
     {
@@ -20,7 +20,7 @@ namespace ServerlessFacesAnalyzer.Functions.DurableFunctions.Activities
         {
             logger = log;
             this.configuration = configuration;
-            this.storageServiceClient = blobClientFactory.CreateClient(Constants.BlobClientName);
+            storageServiceClient = blobClientFactory.CreateClient(Constants.BlobClientName);
         }
 
         [Function(nameof(SaveFaceAnalysisResultActivity))]

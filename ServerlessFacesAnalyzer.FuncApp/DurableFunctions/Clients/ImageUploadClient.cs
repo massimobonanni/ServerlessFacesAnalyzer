@@ -7,12 +7,12 @@ using Microsoft.DurableTask.Client;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using ServerlessFacesAnalyzer.Functions.DurableFunctions.Orchestrators;
-using ServerlessFacesAnalyzer.Functions.Responses;
+using ServerlessFacesAnalyzer.FuncApp.DurableFunctions.Orchestrators;
+using ServerlessFacesAnalyzer.FuncApp.Responses;
 using System.Text.Json;
 
 
-namespace ServerlessFacesAnalyzer.Functions.DurableFunctions.Clients
+namespace ServerlessFacesAnalyzer.FuncApp.DurableFunctions.Clients
 {
     public class ImageUploadClient
     {
@@ -26,7 +26,7 @@ namespace ServerlessFacesAnalyzer.Functions.DurableFunctions.Clients
         {
             logger = log;
             this.configuration = configuration;
-            this.storageServiceClient = blobClientFactory.CreateClient(Constants.BlobClientName);
+            storageServiceClient = blobClientFactory.CreateClient(Constants.BlobClientName);
         }
 
         [Function(nameof(ImageUploadClient))]

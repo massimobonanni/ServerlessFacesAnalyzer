@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using ServerlessFacesAnalyzer.Core.Interfaces;
 using ServerlessFacesAnalyzer.Core.Models;
 
-namespace ServerlessFacesAnalyzer.Functions.DurableFunctions.Activities
+namespace ServerlessFacesAnalyzer.FuncApp.DurableFunctions.Activities
 {
     public class AnalyzeImageActivity
     {
@@ -24,7 +24,7 @@ namespace ServerlessFacesAnalyzer.Functions.DurableFunctions.Activities
             logger = log;
             this.configuration = configuration;
             this.faceAnalyzer = faceAnalyzer;
-            this.storageServiceClient = blobClientFactory.CreateClient(Constants.BlobClientName);
+            storageServiceClient = blobClientFactory.CreateClient(Constants.BlobClientName);
         }
 
         [Function(nameof(AnalyzeImageActivity))]
@@ -37,7 +37,7 @@ namespace ServerlessFacesAnalyzer.Functions.DurableFunctions.Activities
             FaceAnalyzerResult result;
             using (var stream = await blobClient.OpenReadAsync())
             {
-                result = await this.faceAnalyzer.AnalyzeAsync(stream);
+                result = await faceAnalyzer.AnalyzeAsync(stream);
             }
 
             return result;

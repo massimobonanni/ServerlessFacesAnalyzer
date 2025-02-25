@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ServerlessFacesAnalyzer.Functions.Responses;
 using ServerlessFacesAnalyzer.Core.Interfaces;
 using Microsoft.Extensions.Configuration;
 using ServerlessFacesAnalyzer.Core.Models;
@@ -12,8 +11,9 @@ using Microsoft.Extensions.Azure;
 using System.Text.Json;
 using System.Text;
 using Azure.Storage.Sas;
+using ServerlessFacesAnalyzer.FuncApp.Responses;
 
-namespace ServerlessFacesAnalyzer.Functions.Functions
+namespace ServerlessFacesAnalyzer.FuncApp.Functions
 {
     public class AnalyzeFunction
     {
@@ -35,8 +35,8 @@ namespace ServerlessFacesAnalyzer.Functions.Functions
             this.faceAnalyzer = faceAnalyzer;
             this.imageProcessor = imageProcessor;
             this.configuration = configuration;
-            this.storageServiceClient = blobClientFactory.CreateClient(Constants.BlobClientName);
-            this.eventClient = eventClientFactory.CreateClient(Constants.EventGridClientName);
+            storageServiceClient = blobClientFactory.CreateClient(Constants.BlobClientName);
+            eventClient = eventClientFactory.CreateClient(Constants.EventGridClientName);
         }
 
         [Function(nameof(AnalyzeFaceFromStream))]

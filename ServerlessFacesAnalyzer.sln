@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32802.462
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerlessFacesAnalyzer.Functions", "ServerlessFacesAnalyzer.Functions\ServerlessFacesAnalyzer.Functions.csproj", "{A170B815-0855-44F4-A880-C10290CDCDC0}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerlessFacesAnalyzer.Core", "ServerlessFacesAnalyzer.Core\ServerlessFacesAnalyzer.Core.csproj", "{498FB0B5-6669-44A2-80DB-685EDBF0FECE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerlessFacesAnalyzer.Cognitive", "ServerlessFacesAnalyzer.Cognitive\ServerlessFacesAnalyzer.Cognitive.csproj", "{FDA553DB-7609-4661-98E2-4A8E38A8C49C}"
@@ -18,16 +16,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rest", "Rest", "{810A5131-2
 		Tests\Rest\Local.http = Tests\Rest\Local.http
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerlessFacesAnalyzer.FuncApp", "ServerlessFacesAnalyzer.FuncApp\ServerlessFacesAnalyzer.FuncApp.csproj", "{E865D6F4-2D67-4B14-9037-1B633CD92CEB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A170B815-0855-44F4-A880-C10290CDCDC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A170B815-0855-44F4-A880-C10290CDCDC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A170B815-0855-44F4-A880-C10290CDCDC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A170B815-0855-44F4-A880-C10290CDCDC0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{498FB0B5-6669-44A2-80DB-685EDBF0FECE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{498FB0B5-6669-44A2-80DB-685EDBF0FECE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{498FB0B5-6669-44A2-80DB-685EDBF0FECE}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -40,6 +36,10 @@ Global
 		{925FF01E-CE6F-4406-9659-6139FEA48C64}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{925FF01E-CE6F-4406-9659-6139FEA48C64}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{925FF01E-CE6F-4406-9659-6139FEA48C64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E865D6F4-2D67-4B14-9037-1B633CD92CEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E865D6F4-2D67-4B14-9037-1B633CD92CEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E865D6F4-2D67-4B14-9037-1B633CD92CEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E865D6F4-2D67-4B14-9037-1B633CD92CEB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

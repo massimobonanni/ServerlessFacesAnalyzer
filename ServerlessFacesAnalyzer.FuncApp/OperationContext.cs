@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ServerlessFacesAnalyzer.Functions
+namespace ServerlessFacesAnalyzer.FuncApp
 {
     public class OperationContext
     {
@@ -28,7 +28,7 @@ namespace ServerlessFacesAnalyzer.Functions
             context.OperationId = Guid.NewGuid().ToString();
             context.OriginalFileName = file.FileName;
             var dateNow = DateTime.UtcNow;
-            context.Extension = (new FileInfo(file.FileName)).Extension;
+            context.Extension = new FileInfo(file.FileName).Extension;
             context.BlobFolder = $"{dateNow:yyyy}\\{dateNow:MM}\\{dateNow:dd}\\{context.OperationId}";
             context.BlobName = $"{context.BlobFolder}\\{file.FileName}";
             return context;
