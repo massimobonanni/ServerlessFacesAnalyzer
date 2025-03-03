@@ -13,7 +13,7 @@ This implementation uses one single Azure Functions to execute all the tasks.
 
 1. The image is submitted through a POST HTTP call;
 2. The function uploads the image on a specific folder in the Storage Account. The function generates an operation id (GUID) and uses it to create a folder in the storage account. The folder contains the year, month and day (and the operation id) when the image is submitted;
-3. The function calls Image Analysis Service (more info <a href="https://docs.microsoft.com/en-us/azure/cognitive-services/computer-vision/overview-image-analysis" target="_blank">here</a>) to analyze the image;
+3. The function calls Vision Service or Face Service (more info <a href="https://docs.microsoft.com/en-us/azure/cognitive-services/computer-vision/overview-image-analysis" target="_blank">Computer Vision</a> or <a href="https://learn.microsoft.com/en-us/azure/ai-services/computer-vision/overview-identity" target="_blank">Face Service</a>) to analyze the image;
 4. The function uploads the result of the analysis into the Storage Account, and if there are faces, extracts the faces from the original image and uploads them on the Storage;
 5. The function publishes an event using an Event grid Topic to communicate with external system
 
