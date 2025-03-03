@@ -43,8 +43,12 @@ This is the `setting.json` file for the configuration:
     ....
     "StorageConnectionString": "",
     "DestinationContainer": "faces",
-    "FaceAnalyzer:ServiceEndpoint": "",
-    "FaceAnalyzer:ServiceKey": "",
+    "FaceAnalyzerImplementation": "Face|Vision"
+    "VisionServiceFaceAnalyzer:ServiceEndpoint": "",
+    "VisionServiceFaceAnalyzer:ServiceKey": "",
+    "VisionServiceFaceAnalyzer:ConfidenceThreshold": "70",
+    "FaceServiceFaceAnalyzer:ServiceEndpoint": "",
+    "FaceServiceFaceAnalyzer:ServiceKey": "",
     "TopicEndpoint": "",
     "TopicKey": ""
   }
@@ -53,14 +57,23 @@ This is the `setting.json` file for the configuration:
 
 * `StorageConnectionString` : This is the connection string of the storage where the images and the analysis results will be uploaded. This value must be a reference to a secret in the KeyVault. 
 * `DestinationContainer` : This is the container in the storage account where the images and the analysis results will be uploaded. You can use `faces` or a valid container name.
-* `FaceAnalyzer:ServiceEndpoint` : This is the endpoint of the Cognitive Service resource you use to analyze the source image.  This value must be a reference to a secret in the KeyVault. You can find this value in the Cognitive Service resource blade in the Azure Portal as shown in the following figure:
+* `FaceAnalyzerImplementation` : This field allows you to configure if the solution use Vision Service (`Vision`) of Face Service (`Face`) to extracts faces from the image. If you choose `Vision` you need to configure the `VisionServiceFaceAnalyzer:*` settings while if you choose `Face` you need to configure the `FaceServiceFaceAnalyzer` settings.
+* `VisionServiceFaceAnalyzer:ServiceEndpoint` : This is the endpoint of the Vision Service resource you use to analyze the source image. This value must be a reference to a secret in the KeyVault. You can find this value in the Vision Service resource blade in the Azure Portal as shown in the following figure:
 
 ![](Documentation/Images/CognitiveServiceEndpointPortal.png)
 
-* `FaceAnalyzer:ServiceKey` : This is one of the access keys of the Cognitive Service resource you use to analyze the source image. This value must be a reference to a secret in the KeyVault. You can find this value in the Cognitive Service resource blade in the Azure Portal as shown in the following figure:
+* `VisionServiceFaceAnalyzer:ServiceKey` : This is one of the access keys of the Vision Service resource you use to analyze the source image. This value must be a reference to a secret in the KeyVault. You can find this value in the Vision Service resource blade in the Azure Portal as shown in the following figure:
 
 ![](Documentation/Images/CognitiveServiceKeyPortal.png)
 
+* `VisionServiceFaceAnalyzer:ConfidenceThreshold` : This is the threshold you use to accept the faces retrieved by the Vision Service. It is an integer between 0 and 100. 
+* `FaceServiceFaceAnalyzer:ServiceEndpoint` : This is the endpoint of the Face Service resource you use to analyze the source image. This value must be a reference to a secret in the KeyVault. You can find this value in the Face Service resource blade in the Azure Portal as shown in the following figure:
+
+![](Documentation/Images/CognitiveServiceEndpointPortal.png)
+
+* `FaceServiceFaceAnalyzer:ServiceKey` : This is one of the access keys of the Face Service resource you use to analyze the source image. This value must be a reference to a secret in the KeyVault. You can find this value in the Face Service resource blade in the Azure Portal as shown in the following figure:
+
+![](Documentation/Images/CognitiveServiceKeyPortal.png)
 * `TopicEndpoint` : This is the endpoint of the custom topic that the solution uses to emits event for the external services. This value must be a reference to a secret in the KeyVault. You can find this value in the Event Grid Topic resource blade in the Azure Portal as shown in the following figure:
 
 ![](Documentation/Images/EventGridTopicEndpointPortal.png)
