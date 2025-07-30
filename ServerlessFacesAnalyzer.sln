@@ -12,9 +12,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5DA1408D-53B5-435F-A2CE-8E5FD4A8483F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rest", "Rest", "{810A5131-2E6E-4EC2-BBE0-E6BECCCE50A0}"
-	ProjectSection(SolutionItems) = preProject
-		Tests\Rest\Local.http = Tests\Rest\Local.http
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerlessFacesAnalyzer.FuncApp", "ServerlessFacesAnalyzer.FuncApp\ServerlessFacesAnalyzer.FuncApp.csproj", "{E865D6F4-2D67-4B14-9037-1B633CD92CEB}"
 EndProject
