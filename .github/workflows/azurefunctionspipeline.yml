@@ -53,7 +53,7 @@ jobs:
         zip -r ${{ env.BUILD_OUTPUT_PATH }}/${{ env.BUILD_PACKAGE_NAME }} .
         
     - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v3.1.0
+      uses: actions/upload-artifact@v4.6.2
       with:
         name: build_artifacts
         path: ${{ env.BUILD_OUTPUT_PATH }}

@@ -40,7 +40,7 @@ jobs:
           az bicep build --file ${{ env.BICEP_PROJECT_PATH }}/${{ env.BICEP_MAIN_TEMPLATE }} --outfile main.json
       
       - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v3.1.0
+        uses: actions/upload-artifact@v4.6.2
         with:
           name: build_artifacts
           path: ${{ env.BUILD_OUTPUT_PATH }}
